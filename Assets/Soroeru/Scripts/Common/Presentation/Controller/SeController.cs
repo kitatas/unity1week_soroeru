@@ -1,4 +1,3 @@
-using System;
 using Soroeru.Common.Domain.UseCase;
 using VContainer;
 
@@ -17,11 +16,6 @@ namespace Soroeru.Common.Presentation.Controller
         public void Play(SeType type)
         {
             var clip = _seUseCase.GetSe(type);
-            if (clip == null)
-            {
-                throw new Exception("Can't find BGM clip.");
-            }
-
             audioSource.PlayOneShot(clip);
         }
     }
