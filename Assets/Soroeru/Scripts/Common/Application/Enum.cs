@@ -7,4 +7,9 @@ namespace Soroeru.Common
     public enum SeType
     {
     }
+
+    public enum SceneName
+    {
+        Main,
+    }
 }

@@ -26,6 +26,9 @@ namespace Soroeru.Common
             // UseCase
             builder.Register<SoundUseCase>(Lifetime.Singleton).AsImplementedInterfaces();
 
+            // Controller
+            builder.Register<SceneLoader>(Lifetime.Singleton);
+
             // MonoBehaviour
             var bgm = FindObjectOfType<BgmController>();
             var se = FindObjectOfType<SeController>();
