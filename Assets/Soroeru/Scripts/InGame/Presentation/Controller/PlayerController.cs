@@ -1,3 +1,4 @@
+using EFUK;
 using Soroeru.InGame.Domain.UseCase;
 using UniRx;
 using UniRx.Triggers;
@@ -10,15 +11,17 @@ namespace Soroeru.InGame.Presentation.Controller
     public sealed class PlayerController : MonoBehaviour
     {
         private IPlayerInputUseCase _inputUseCase;
+        private PlayerAnimatorUseCase _animatorUseCase;
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
 
         [Inject]
-        private void Construct(IPlayerInputUseCase inputUseCase, PlayerMoveUseCase moveUseCase,
-            PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase)
+        private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
+            PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase)
         {
             _inputUseCase = inputUseCase;
+            _animatorUseCase = animatorUseCase;
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
@@ -31,8 +34,7 @@ namespace Soroeru.InGame.Presentation.Controller
             horizontal
                 .Subscribe(x =>
                 {
-                    // TODO: アニメーション制御
-                    _moveUseCase.SetVelocityX(x);
+                    _animatorUseCase.SetRun(!x.EqualZero());
                     _spriteUseCase.Flip(x);
                 })
                 .AddTo(this);
@@ -61,6 +63,13 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     horizontal.Value = _inputUseCase.horizontal;
                     isJump.Value = _inputUseCase.isJump;
+                })
+                .AddTo(this);
+
+            fixedTickAsObservable
+                .Subscribe(_ =>
+                {
+                    _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
                 })
                 .AddTo(this);
         }
