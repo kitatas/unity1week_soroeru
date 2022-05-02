@@ -1,5 +1,6 @@
 using EFUK;
 using Soroeru.InGame.Domain.UseCase;
+using Soroeru.InGame.Presentation.View;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -15,20 +16,25 @@ namespace Soroeru.InGame.Presentation.Controller
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
+        private SlotView _slotView;
 
         [Inject]
         private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
-            PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase)
+            PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
+            SlotView slotView)
         {
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
+            _slotView = slotView;
         }
 
         private void Start()
         {
+            _slotView.Init();
+            
             // 横入力時の制御
             var horizontal = new ReactiveProperty<float>(0.0f);
             horizontal
@@ -63,6 +69,9 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     horizontal.Value = _inputUseCase.horizontal;
                     isJump.Value = _inputUseCase.isJump;
+
+                    var deltaTime = Time.deltaTime;
+                    _slotView.Tick(transform, deltaTime);
                 })
                 .AddTo(this);
 

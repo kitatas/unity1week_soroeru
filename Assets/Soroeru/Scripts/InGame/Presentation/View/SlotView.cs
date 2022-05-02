@@ -12,20 +12,11 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private ReelView[] reelViews = default;
 
+        private readonly Vector3 _traceOffset = new Vector3(-0.55f, 0.6f, 0.0f);
+
         // TODO: 仮の初期化なので修正する
         private void Start()
         {
-            Init();
-
-            // リールの回転
-            this.UpdateAsObservable()
-                .Subscribe(_ =>
-                {
-                    var deltaTime = Time.deltaTime;
-                    Tick(deltaTime);
-                })
-                .AddTo(this);
-
             // リールの停止
             int index = 0;
             this.UpdateAsObservable()
@@ -62,21 +53,23 @@ namespace Soroeru.InGame.Presentation.View
 
         public void Init()
         {
-            var moveSpeed = 5.0f;
-            var startPositionY = 4.0f;
-            var endPositionY = -4.0f;
-
+            var moveSpeed = 1.0f;
             foreach (var reelView in reelViews)
             {
-                reelView.Init(moveSpeed, startPositionY, endPositionY);
+                reelView.Init(moveSpeed);
             }
         }
 
-        public void Tick(float deltaTime)
+        public void Tick(Transform player, float deltaTime)
         {
+            transform.position = player.position + _traceOffset;
+
+            var height = transform.position.y;
+            var startPositionY = height + 0.8f;
+            var endPositionY = height - 0.8f;
             foreach (var reelView in reelViews)
             {
-                reelView.Tick(deltaTime);
+                reelView.Tick(startPositionY, endPositionY, deltaTime);
             }
         }
 

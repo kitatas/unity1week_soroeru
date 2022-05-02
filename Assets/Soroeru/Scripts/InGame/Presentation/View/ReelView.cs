@@ -13,15 +13,15 @@ namespace Soroeru.InGame.Presentation.View
 
         private bool _isStop = false;
 
-        public void Init(float moveSpeed, float startPositionY, float endPositionY)
+        public void Init(float moveSpeed)
         {
             foreach (var pictureView in pictureViews)
             {
-                pictureView.Init(moveSpeed, startPositionY, endPositionY);
+                pictureView.Init(moveSpeed);
             }
         }
 
-        public void Tick(float deltaTime)
+        public void Tick(float startPositionY, float endPositionY, float deltaTime)
         {
             if (_isStop)
             {
@@ -30,7 +30,7 @@ namespace Soroeru.InGame.Presentation.View
 
             foreach (var pictureView in pictureViews)
             {
-                pictureView.Tick(deltaTime);
+                pictureView.Tick(startPositionY, endPositionY, deltaTime);
             }
         }
 
@@ -49,7 +49,7 @@ namespace Soroeru.InGame.Presentation.View
         {
             foreach (var pictureView in pictureViews)
             {
-                if (pictureView.height.EqualZero())
+                if (pictureView.localHeight.EqualZero())
                 {
                     Debug.Log($"{name} - {pictureView.name}");
                     return;

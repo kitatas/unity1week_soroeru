@@ -1,6 +1,7 @@
 using Soroeru.InGame.Data.DataStore;
 using Soroeru.InGame.Domain.Repository;
 using Soroeru.InGame.Domain.UseCase;
+using Soroeru.InGame.Presentation.View;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -10,6 +11,8 @@ namespace Soroeru.InGame.Installer
     public sealed class InGameInstaller : LifetimeScope
     {
         [SerializeField] private PlayerData playerData = default;
+
+        [SerializeField] private SlotView slotView = default;
 
         // Player's Component
         [SerializeField] private Animator animator = default;
@@ -31,6 +34,9 @@ namespace Soroeru.InGame.Installer
             builder.Register<PlayerMoveUseCase>(Lifetime.Scoped).WithParameter(rigidbody2d);
             builder.Register<PlayerRayUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerSpriteUseCase>(Lifetime.Scoped).WithParameter(spriteRenderer);
+            
+            // View
+            builder.RegisterInstance<SlotView>(slotView);
         }
     }
 }

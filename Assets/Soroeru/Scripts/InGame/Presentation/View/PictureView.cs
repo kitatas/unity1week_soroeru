@@ -14,21 +14,20 @@ namespace Soroeru.InGame.Presentation.View
         private float _endPositionY;
 
         public float height => transform.position.y;
+        public float localHeight => transform.localPosition.y;
 
-        public void Init(float moveSpeed, float startPositionY, float endPositionY)
+        public void Init(float moveSpeed)
         {
             _moveSpeed = moveSpeed;
-            _startPositionY = startPositionY;
-            _endPositionY = endPositionY;
         }
 
-        public void Tick(float deltaTime)
+        public void Tick(float startPositionY, float endPositionY, float deltaTime)
         {
             transform.TranslateY(_moveSpeed * deltaTime * -1);
 
-            if (height <= _endPositionY)
+            if (height <= endPositionY)
             {
-                transform.TranslateY(_startPositionY - _endPositionY);
+                transform.TranslateY(startPositionY - endPositionY);
             }
         }
 
@@ -37,7 +36,7 @@ namespace Soroeru.InGame.Presentation.View
         /// </summary>
         public void Correct()
         {
-            var y = Mathf.RoundToInt(height);
+            var y = Mathf.RoundToInt(localHeight);
             transform
                 .DOLocalMoveY(y, 0.05f)
                 .SetEase(Ease.Linear);
