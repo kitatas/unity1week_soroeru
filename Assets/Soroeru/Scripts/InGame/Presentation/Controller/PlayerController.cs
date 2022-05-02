@@ -11,14 +11,16 @@ namespace Soroeru.InGame.Presentation.Controller
     {
         private IPlayerInputUseCase _inputUseCase;
         private PlayerMoveUseCase _moveUseCase;
+        private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
 
         [Inject]
         private void Construct(IPlayerInputUseCase inputUseCase, PlayerMoveUseCase moveUseCase,
-            PlayerSpriteUseCase spriteUseCase)
+            PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase)
         {
             _inputUseCase = inputUseCase;
             _moveUseCase = moveUseCase;
+            _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
         }
 
@@ -38,6 +40,7 @@ namespace Soroeru.InGame.Presentation.Controller
             // ジャンプ制御
             var isJump = new ReactiveProperty<bool>(false);
             isJump
+                .Where(_ => _rayUseCase.IsGround())
                 .Subscribe(_ =>
                 {
                     // TODO: 長押し判定はここで行う？

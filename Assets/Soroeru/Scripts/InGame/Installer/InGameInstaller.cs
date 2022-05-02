@@ -13,6 +13,7 @@ namespace Soroeru.InGame.Installer
 
         // Player's Component
         [SerializeField] private Rigidbody2D rigidbody2d = default;
+        [SerializeField] private Transform playerTransform = default;
         [SerializeField] private SpriteRenderer spriteRenderer = default;
 
         protected override void Configure(IContainerBuilder builder)
@@ -26,6 +27,7 @@ namespace Soroeru.InGame.Installer
             // UseCase
             builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<PlayerMoveUseCase>(Lifetime.Scoped).WithParameter(rigidbody2d);
+            builder.Register<PlayerRayUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerSpriteUseCase>(Lifetime.Scoped).WithParameter(spriteRenderer);
         }
     }
