@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Soroeru.Common.Domain.UseCase
 {
-    public sealed class SoundUseCase : IBgmUseCase
+    public sealed class SoundUseCase : IBgmUseCase, ISeUseCase
     {
         private readonly SoundRepository _soundRepository;
 
@@ -19,6 +19,17 @@ namespace Soroeru.Common.Domain.UseCase
             if (data == null)
             {
                 throw new Exception("Can't find BGM data.");
+            }
+
+            return data.clip;
+        }
+
+        public AudioClip GetSe(SeType type)
+        {
+            var data = _soundRepository.FindSe(type);
+            if (data == null)
+            {
+                throw new Exception("Can't find SE data.");
             }
 
             return data.clip;

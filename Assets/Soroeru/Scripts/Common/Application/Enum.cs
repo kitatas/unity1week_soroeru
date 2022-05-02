@@ -4,4 +4,9 @@ namespace Soroeru.Common
     {
         None,
     }
+
+    public enum SeType
+    {
+        None,
+    }
 }
