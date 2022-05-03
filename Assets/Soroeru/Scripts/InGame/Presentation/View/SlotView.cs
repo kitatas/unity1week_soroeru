@@ -1,7 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
 using EFUK;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -14,24 +13,13 @@ namespace Soroeru.InGame.Presentation.View
         [SerializeField] private ReelView[] reelViews = default;
 
         private readonly Vector3 _traceOffset = new Vector3(-0.55f, 0.6f, 0.0f);
-        private int _reelIndex = 0;
-
-        // TODO: 仮の初期化なので修正する
-        private void Start()
-        {
-            // 出目の役
-            this.UpdateAsObservable()
-                .Where(_ => Input.GetKeyDown(KeyCode.Q))
-                .Subscribe(_ =>
-                {
-                    LogRoleAll();
-                })
-                .AddTo(this);
-        }
+        private int _reelIndex;
+        private List<PictureType> _roleList;
 
         public void Init()
         {
             _reelIndex = 0;
+            _roleList = new List<PictureType>();
             var moveSpeed = 1.0f;
             foreach (var reelView in reelViews)
             {
@@ -66,17 +54,24 @@ namespace Soroeru.InGame.Presentation.View
             return reelViews.All(x => x.isStop);
         }
 
-        public void LogRoleAll()
+        public List<PictureType> GetRole()
         {
+            // 一定時間後、再回転
+            this.Delay(SlotConfig.REEL_ROTATE_INTERVAL, StartRollAll);
+
+            // 出目の取得
             foreach (var reelView in reelViews)
             {
-                reelView.GetHitPicture();
+                _roleList.Add(reelView.GetHitPictureType());
             }
+
+            return _roleList;
         }
 
-        public void StartRollAll()
+        private void StartRollAll()
         {
             _reelIndex = 0;
+            _roleList.Clear();
             foreach (var reelView in reelViews)
             {
                 reelView.StartRoll();

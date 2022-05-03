@@ -11,4 +11,12 @@ namespace Soroeru.InGame
         Left,
         Right,
     }
+
+    public enum PictureType
+    {
+        None = 0,
+        Gun  = 1,
+        Flag = 2,
+        Puni = 3,
+    }
 }

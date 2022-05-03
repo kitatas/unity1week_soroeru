@@ -18,12 +18,14 @@ namespace Soroeru.InGame.Presentation.Controller
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
+        private RoleUseCase _roleUseCase;
         private SlotView _slotView;
 
         [Inject]
         private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
+            RoleUseCase roleUseCase,
             SlotView slotView)
         {
             _inputUseCase = inputUseCase;
@@ -33,6 +35,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
+            _roleUseCase = roleUseCase;
             _slotView = slotView;
         }
 
@@ -87,8 +90,10 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(_ => _slotView.IsReelStopAll())
                 .Subscribe(_ =>
                 {
-                    // TODO: スロットの効果発動
-                    this.Delay(5.0f, () => _slotView.StartRollAll());
+                    var list = _slotView.GetRole();
+                    var type = _roleUseCase.RunRoleAction(list);
+                    Debug.Log($"role: {type}");
+                    _equipUseCase.Equip(type);
                 })
                 .AddTo(this);
 

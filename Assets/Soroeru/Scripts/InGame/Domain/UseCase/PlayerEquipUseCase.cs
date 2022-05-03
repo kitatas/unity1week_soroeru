@@ -43,6 +43,17 @@ namespace Soroeru.InGame.Domain.UseCase
             currentEquip = data.type;
         }
 
+        public void Equip(PictureType type)
+        {
+            var equipType = type.ConvertForEquip();
+            if (equipType == EquipType.None)
+            {
+                return;
+            }
+
+            Equip(equipType);
+        }
+
         public void Tick(float deltaTime)
         {
             if (currentEquip == EquipType.None)

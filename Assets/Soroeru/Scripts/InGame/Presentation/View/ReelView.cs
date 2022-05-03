@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using EFUK;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -44,17 +44,17 @@ namespace Soroeru.InGame.Presentation.View
             }
         }
 
-        // TODO: 仮のログ出力
-        public void GetHitPicture()
+        public PictureType GetHitPictureType()
         {
             foreach (var pictureView in pictureViews)
             {
-                if (pictureView.localHeight.EqualZero())
+                if (Mathf.RoundToInt(pictureView.localHeight) == 0)
                 {
-                    Debug.Log($"{name} - {pictureView.name}");
-                    return;
+                    return pictureView.type;
                 }
             }
+
+            throw new Exception($"invalid reel picture.");
         }
 
         public void StartRoll()

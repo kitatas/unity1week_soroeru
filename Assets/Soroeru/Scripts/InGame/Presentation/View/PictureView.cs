@@ -9,10 +9,13 @@ namespace Soroeru.InGame.Presentation.View
     /// </summary>
     public sealed class PictureView : MonoBehaviour
     {
+        [SerializeField] private PictureType pictureType = default;
+
         private float _moveSpeed;
 
         public float height => transform.position.y;
-        public float localHeight => transform.localPosition.y;
+        public float localHeight => (transform.localPosition.y);
+        public PictureType type => pictureType;
 
         public void Init(float moveSpeed)
         {

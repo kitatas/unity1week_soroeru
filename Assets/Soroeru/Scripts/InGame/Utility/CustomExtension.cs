@@ -14,5 +14,19 @@ namespace Soroeru.InGame
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
+
+        public static EquipType ConvertForEquip(this PictureType type)
+        {
+            switch (type)
+            {
+                case PictureType.Gun:
+                    return EquipType.Gun;
+                case PictureType.Flag:
+                case PictureType.Puni:
+                    return EquipType.None;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
     }
 }
