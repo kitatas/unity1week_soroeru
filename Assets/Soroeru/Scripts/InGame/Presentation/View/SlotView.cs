@@ -1,6 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
 using EFUK;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -12,84 +12,66 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private ReelView[] reelViews = default;
 
-        // TODO: 仮の初期化なので修正する
-        private void Start()
-        {
-            Init();
-
-            // リールの回転
-            this.UpdateAsObservable()
-                .Subscribe(_ =>
-                {
-                    var deltaTime = Time.deltaTime;
-                    Tick(deltaTime);
-                })
-                .AddTo(this);
-
-            // リールの停止
-            int index = 0;
-            this.UpdateAsObservable()
-                .Where(_ => Input.GetKeyDown(KeyCode.Space))
-                .Subscribe(_ =>
-                {
-                    if (reelViews.TryGetValue(index, out var reelView))
-                    {
-                        reelView.Stop();
-                        index++;
-                    }
-                })
-                .AddTo(this);
-
-            // 出目の役
-            this.UpdateAsObservable()
-                .Where(_ => Input.GetKeyDown(KeyCode.Q))
-                .Subscribe(_ =>
-                {
-                    LogRoleAll();
-                })
-                .AddTo(this);
-
-            // 再度回転
-            this.UpdateAsObservable()
-                .Where(_ => Input.GetKeyDown(KeyCode.Return))
-                .Subscribe(_ =>
-                {
-                    index = 0;
-                    StartRollAll();
-                })
-                .AddTo(this);
-        }
+        private readonly Vector3 _traceOffset = new Vector3(-0.55f, 0.6f, 0.0f);
+        private int _reelIndex;
+        private List<PictureType> _roleList;
 
         public void Init()
         {
-            var moveSpeed = 5.0f;
-            var startPositionY = 4.0f;
-            var endPositionY = -4.0f;
-
+            _reelIndex = 0;
+            _roleList = new List<PictureType>();
+            var moveSpeed = 1.0f;
             foreach (var reelView in reelViews)
             {
-                reelView.Init(moveSpeed, startPositionY, endPositionY);
+                reelView.Init(moveSpeed);
             }
         }
 
-        public void Tick(float deltaTime)
+        public void Tick(Transform player, float deltaTime)
         {
+            transform.position = player.position + _traceOffset;
+
+            var height = transform.position.y;
+            var startPositionY = height + 0.8f;
+            var endPositionY = height - 0.8f;
             foreach (var reelView in reelViews)
             {
-                reelView.Tick(deltaTime);
+                reelView.Tick(startPositionY, endPositionY, deltaTime);
             }
         }
 
-        public void LogRoleAll()
+        public void StopReel()
         {
-            foreach (var reelView in reelViews)
+            if (reelViews.TryGetValue(_reelIndex, out var reelView))
             {
-                reelView.GetHitPicture();
+                reelView.Stop();
+                _reelIndex++;
             }
         }
 
-        public void StartRollAll()
+        public bool IsReelStopAll()
         {
+            return reelViews.All(x => x.isStop);
+        }
+
+        public List<PictureType> GetRole()
+        {
+            // 一定時間後、再回転
+            this.Delay(SlotConfig.REEL_ROTATE_INTERVAL, StartRollAll);
+
+            // 出目の取得
+            foreach (var reelView in reelViews)
+            {
+                _roleList.Add(reelView.GetHitPictureType());
+            }
+
+            return _roleList;
+        }
+
+        private void StartRollAll()
+        {
+            _reelIndex = 0;
+            _roleList.Clear();
             foreach (var reelView in reelViews)
             {
                 reelView.StartRoll();

@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using EFUK;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -11,55 +11,55 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private List<PictureView> pictureViews;
 
-        private bool _isStop = false;
+        public bool isStop { get; private set; }
 
-        public void Init(float moveSpeed, float startPositionY, float endPositionY)
+        public void Init(float moveSpeed)
         {
+            StartRoll();
             foreach (var pictureView in pictureViews)
             {
-                pictureView.Init(moveSpeed, startPositionY, endPositionY);
+                pictureView.Init(moveSpeed);
             }
         }
 
-        public void Tick(float deltaTime)
+        public void Tick(float startPositionY, float endPositionY, float deltaTime)
         {
-            if (_isStop)
+            if (isStop)
             {
                 return;
             }
 
             foreach (var pictureView in pictureViews)
             {
-                pictureView.Tick(deltaTime);
+                pictureView.Tick(startPositionY, endPositionY, deltaTime);
             }
         }
 
         public void Stop()
         {
-            _isStop = true;
-
+            isStop = true;
             foreach (var pictureView in pictureViews)
             {
                 pictureView.Correct();
             }
         }
 
-        // TODO: 仮のログ出力
-        public void GetHitPicture()
+        public PictureType GetHitPictureType()
         {
             foreach (var pictureView in pictureViews)
             {
-                if (pictureView.height.EqualZero())
+                if (Mathf.RoundToInt(pictureView.localHeight) == 0)
                 {
-                    Debug.Log($"{name} - {pictureView.name}");
-                    return;
+                    return pictureView.type;
                 }
             }
+
+            throw new Exception($"invalid reel picture.");
         }
 
         public void StartRoll()
         {
-            _isStop = false;
+            isStop = false;
         }
     }
 }
