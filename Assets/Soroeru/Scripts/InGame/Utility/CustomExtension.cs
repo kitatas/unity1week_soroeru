@@ -15,6 +15,16 @@ namespace Soroeru.InGame
             };
         }
 
+        public static Vector2 ConvertVector(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Left  => Vector2.left,
+                Direction.Right => Vector2.right,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+
         public static EquipType ConvertForEquip(this PictureType type)
         {
             switch (type)
