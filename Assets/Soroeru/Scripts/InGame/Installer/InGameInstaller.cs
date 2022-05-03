@@ -10,6 +10,7 @@ namespace Soroeru.InGame.Installer
 {
     public sealed class InGameInstaller : LifetimeScope
     {
+        [SerializeField] private AttackTable attackTable = default;
         [SerializeField] private PlayerData playerData = default;
 
         [SerializeField] private SlotView slotView = default;
@@ -23,14 +24,17 @@ namespace Soroeru.InGame.Installer
         protected override void Configure(IContainerBuilder builder)
         {
             // DataStore
+            builder.RegisterInstance<AttackTable>(attackTable);
             builder.RegisterInstance<PlayerData>(playerData);
 
             // Repository
+            builder.Register<AttackRepository>(Lifetime.Scoped);
             builder.Register<PlayerRepository>(Lifetime.Scoped);
 
             // UseCase
             builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<PlayerAnimatorUseCase>(Lifetime.Scoped).WithParameter(animator);
+            builder.Register<PlayerAttackUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerMoveUseCase>(Lifetime.Scoped).WithParameter(rigidbody2d);
             builder.Register<PlayerRayUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerSpriteUseCase>(Lifetime.Scoped).WithParameter(spriteRenderer);

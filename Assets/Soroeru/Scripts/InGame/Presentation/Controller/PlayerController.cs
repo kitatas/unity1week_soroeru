@@ -1,3 +1,4 @@
+using EFUK;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.View;
 using UniRx;
@@ -12,6 +13,7 @@ namespace Soroeru.InGame.Presentation.Controller
     {
         private IPlayerInputUseCase _inputUseCase;
         private PlayerAnimatorUseCase _animatorUseCase;
+        private PlayerAttackUseCase _attackUseCase;
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
@@ -19,11 +21,13 @@ namespace Soroeru.InGame.Presentation.Controller
 
         [Inject]
         private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
+            PlayerAttackUseCase attackUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotView slotView)
         {
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
+            _attackUseCase = attackUseCase;
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
@@ -33,7 +37,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private void Start()
         {
             _slotView.Init();
-            
+
             // 横入力時の制御
             var horizontal = new ReactiveProperty<float>(0.0f);
             horizontal
@@ -42,6 +46,12 @@ namespace Soroeru.InGame.Presentation.Controller
                     _animatorUseCase.SetRun(x);
                     _spriteUseCase.Flip(x);
                 })
+                .AddTo(this);
+
+            var direction = Direction.Right;
+            horizontal
+                .Where(x => x.EqualZero() == false)
+                .Subscribe(x => direction = x > 0 ? Direction.Right : Direction.Left)
                 .AddTo(this);
 
             // ジャンプ制御
@@ -64,7 +74,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetAttack();
-                    // TODO: 攻撃処理
+                    _attackUseCase.Attack(EquipType.None, direction);
                 })
                 .AddTo(this);
 
