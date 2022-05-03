@@ -1,4 +1,3 @@
-using EFUK;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.View;
 using UniRx;
@@ -40,7 +39,7 @@ namespace Soroeru.InGame.Presentation.Controller
             horizontal
                 .Subscribe(x =>
                 {
-                    _animatorUseCase.SetRun(!x.EqualZero());
+                    _animatorUseCase.SetRun(x);
                     _spriteUseCase.Flip(x);
                 })
                 .AddTo(this);
@@ -48,12 +47,24 @@ namespace Soroeru.InGame.Presentation.Controller
             // ジャンプ制御
             var isJump = new ReactiveProperty<bool>(false);
             isJump
+                .Where(x => x)
                 .Where(_ => _rayUseCase.IsGround())
                 .Subscribe(_ =>
                 {
                     // TODO: 長押し判定はここで行う？
                     var isLongDown = _;
                     _moveUseCase.Jump(isLongDown);
+                })
+                .AddTo(this);
+
+            // 攻撃制御
+            var isAttack = new ReactiveProperty<bool>(false);
+            isAttack
+                .Where(x => x)
+                .Subscribe(_ =>
+                {
+                    _animatorUseCase.SetAttack();
+                    // TODO: 攻撃処理
                 })
                 .AddTo(this);
 
@@ -69,9 +80,13 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     horizontal.Value = _inputUseCase.horizontal;
                     isJump.Value = _inputUseCase.isJump;
+                    isAttack.Value = _inputUseCase.isAttack;
 
                     var deltaTime = Time.deltaTime;
                     _slotView.Tick(transform, deltaTime);
+
+                    _animatorUseCase.SetGround(_rayUseCase.IsGround());
+                    _animatorUseCase.SetFall(_moveUseCase.gravity);
                 })
                 .AddTo(this);
 

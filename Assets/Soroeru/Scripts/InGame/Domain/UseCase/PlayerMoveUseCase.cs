@@ -17,8 +17,15 @@ namespace Soroeru.InGame.Domain.UseCase
 
         public void SetVelocityX(float x)
         {
-            _rigidbody2d.velocity = _moveData.speed * x * Vector2.right;
+            _rigidbody2d.velocity = _moveData.speed * x * Vector2.right + GetGravityVector();
         }
+
+        private Vector2 GetGravityVector()
+        {
+            return new Vector2(0.0f, gravity);
+        }
+
+        public float gravity => _rigidbody2d.velocity.y;
 
         public void Jump(bool isHigh)
         {
