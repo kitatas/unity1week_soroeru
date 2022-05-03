@@ -1,3 +1,4 @@
+using System.Linq;
 using EFUK;
 using UniRx;
 using UniRx.Triggers;
@@ -26,20 +27,11 @@ namespace Soroeru.InGame.Presentation.View
                     LogRoleAll();
                 })
                 .AddTo(this);
-
-            // 再度回転
-            this.UpdateAsObservable()
-                .Where(_ => Input.GetKeyDown(KeyCode.Return))
-                .Subscribe(_ =>
-                {
-                    _reelIndex = 0;
-                    StartRollAll();
-                })
-                .AddTo(this);
         }
 
         public void Init()
         {
+            _reelIndex = 0;
             var moveSpeed = 1.0f;
             foreach (var reelView in reelViews)
             {
@@ -69,6 +61,11 @@ namespace Soroeru.InGame.Presentation.View
             }
         }
 
+        public bool IsReelStopAll()
+        {
+            return reelViews.All(x => x.isStop);
+        }
+
         public void LogRoleAll()
         {
             foreach (var reelView in reelViews)
@@ -79,6 +76,7 @@ namespace Soroeru.InGame.Presentation.View
 
         public void StartRollAll()
         {
+            _reelIndex = 0;
             foreach (var reelView in reelViews)
             {
                 reelView.StartRoll();

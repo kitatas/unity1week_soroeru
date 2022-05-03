@@ -58,9 +58,10 @@ namespace Soroeru.InGame.Presentation.Controller
 
             // ジャンプ制御
             var isJump = new ReactiveProperty<bool>(false);
-            isJump
+            var canJump = isJump
                 .Where(x => x)
-                .Where(_ => _rayUseCase.IsGround())
+                .Where(_ => _rayUseCase.IsGround());
+            canJump
                 .Subscribe(_ =>
                 {
                     // TODO: 長押し判定はここで行う？
@@ -80,12 +81,28 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
-            // スロット停止
-            isJump
+            // 全てのリールが停止した時
+            var reelStop = new Subject<Unit>();
+            reelStop
+                .Where(_ => _slotView.IsReelStopAll())
+                .Subscribe(_ =>
+                {
+                    // TODO: スロットの効果発動
+                    this.Delay(5.0f, () => _slotView.StartRollAll());
+                })
+                .AddTo(this);
+
+            // 1つのリールを停止
+            canJump
                 .Merge(isAttack)
                 // TODO: ダメージ時
                 .Where(x => x)
-                .Subscribe(_ => _slotView.StopReel())
+                .Where(_ => _slotView.IsReelStopAll() == false)
+                .Subscribe(_ =>
+                {
+                    _slotView.StopReel();
+                    reelStop.OnNext(Unit.Default);
+                })
                 .AddTo(this);
 
             // TODO: メニュー開いている場合は動かさない

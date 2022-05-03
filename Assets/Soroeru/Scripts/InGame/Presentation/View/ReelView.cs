@@ -11,10 +11,11 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private List<PictureView> pictureViews;
 
-        private bool _isStop = false;
+        public bool isStop { get; private set; }
 
         public void Init(float moveSpeed)
         {
+            StartRoll();
             foreach (var pictureView in pictureViews)
             {
                 pictureView.Init(moveSpeed);
@@ -23,7 +24,7 @@ namespace Soroeru.InGame.Presentation.View
 
         public void Tick(float startPositionY, float endPositionY, float deltaTime)
         {
-            if (_isStop)
+            if (isStop)
             {
                 return;
             }
@@ -36,8 +37,7 @@ namespace Soroeru.InGame.Presentation.View
 
         public void Stop()
         {
-            _isStop = true;
-
+            isStop = true;
             foreach (var pictureView in pictureViews)
             {
                 pictureView.Correct();
@@ -59,7 +59,7 @@ namespace Soroeru.InGame.Presentation.View
 
         public void StartRoll()
         {
-            _isStop = false;
+            isStop = false;
         }
     }
 }

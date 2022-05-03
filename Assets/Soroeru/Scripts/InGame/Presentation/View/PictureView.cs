@@ -10,8 +10,6 @@ namespace Soroeru.InGame.Presentation.View
     public sealed class PictureView : MonoBehaviour
     {
         private float _moveSpeed;
-        private float _startPositionY;
-        private float _endPositionY;
 
         public float height => transform.position.y;
         public float localHeight => transform.localPosition.y;
