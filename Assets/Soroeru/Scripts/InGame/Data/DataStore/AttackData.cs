@@ -8,8 +8,12 @@ namespace Soroeru.InGame.Data.DataStore
     {
         [SerializeField] private EquipType equipType = default;
         [SerializeField] private BaseAttackCollision attackCollision = default;
+        [SerializeField] private float lifeTime = default;
+        [SerializeField] private int attackPower = default;
 
         public EquipType type => equipType;
         public BaseAttackCollision collision => attackCollision;
+        public float time => lifeTime;
+        public int power => attackPower;
     }
 }

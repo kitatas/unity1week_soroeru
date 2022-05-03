@@ -1,4 +1,6 @@
 using System;
+using EFUK;
+using Soroeru.InGame.Data.Entity;
 using Soroeru.InGame.Domain.Repository;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -29,9 +31,20 @@ namespace Soroeru.InGame.Domain.UseCase
                 throw new Exception($"Can't get Attack collision. (type: {type})");
             }
 
+            if (data.time.EqualZero())
+            {
+                throw new Exception($"Attack life time is zero. (type: {type})");
+            }
+
+            if (data.power == 0)
+            {
+                throw new Exception($"Attack power is zero. (type: {type})");
+            }
+
             var initPosition = _transform.position + direction.ConvertOffset();
             var collision = Object.Instantiate(data.collision, initPosition, Quaternion.identity);
-            collision.Fire(_transform, direction);
+            var attackEntity = new AttackEntity(_transform, direction, data.time, data.power);
+            collision.Fire(attackEntity);
         }
     }
 }

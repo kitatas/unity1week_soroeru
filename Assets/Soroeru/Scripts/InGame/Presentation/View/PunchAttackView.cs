@@ -1,14 +1,14 @@
-using UnityEngine;
+using Soroeru.InGame.Data.Entity;
 
 namespace Soroeru.InGame.Presentation.View
 {
     public sealed class PunchAttackView : BaseAttackCollision
     {
-        public override void Fire(Transform owner, Direction direction)
+        public override void Fire(AttackEntity attackEntity)
         {
-            transform.SetParent(owner);
+            base.Fire(attackEntity);
 
-            Destroy(gameObject, lifeTime);
+            transform.SetParent(attackEntity.owner);
         }
     }
 }
