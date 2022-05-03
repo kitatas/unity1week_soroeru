@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f8d216d8c0046c6b1716c127ac3d87f, type: 3}
-  m_Name: AttackTable
+  m_Script: {fileID: 11500000, guid: 971dab1be3f24a77a57e4bd798b81fb9, type: 3}
+  m_Name: AttackData - Ammo
   m_EditorClassIdentifier: 
-  dataList:
-  - {fileID: 11400000, guid: fefe5fe73c6b947ba829ae99d1028a80, type: 2}
-  - {fileID: 11400000, guid: f204d043e96594a68aaa64c5018e0554, type: 2}
+  equipType: 1
+  attackCollision: {fileID: 2317552866237627048, guid: d2796e24ab15a4d539a40350ce77bb4d, type: 3}
