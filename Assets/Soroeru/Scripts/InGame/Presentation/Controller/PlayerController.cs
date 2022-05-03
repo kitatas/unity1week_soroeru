@@ -14,6 +14,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private IPlayerInputUseCase _inputUseCase;
         private PlayerAnimatorUseCase _animatorUseCase;
         private PlayerAttackUseCase _attackUseCase;
+        private PlayerEquipUseCase _equipUseCase;
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
@@ -21,13 +22,14 @@ namespace Soroeru.InGame.Presentation.Controller
 
         [Inject]
         private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
-            PlayerAttackUseCase attackUseCase,
+            PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotView slotView)
         {
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
             _attackUseCase = attackUseCase;
+            _equipUseCase = equipUseCase;
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
@@ -74,7 +76,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetAttack();
-                    _attackUseCase.Attack(EquipType.None, direction);
+                    _attackUseCase.Attack(_equipUseCase.currentEquip, direction);
                 })
                 .AddTo(this);
 
@@ -102,6 +104,7 @@ namespace Soroeru.InGame.Presentation.Controller
 
                     var deltaTime = Time.deltaTime;
                     _slotView.Tick(transform, deltaTime);
+                    _equipUseCase.Tick(deltaTime);
 
                     _animatorUseCase.SetGround(_rayUseCase.IsGround());
                     _animatorUseCase.SetFall(_moveUseCase.gravity);
