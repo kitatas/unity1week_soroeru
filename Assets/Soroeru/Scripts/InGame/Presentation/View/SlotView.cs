@@ -13,24 +13,11 @@ namespace Soroeru.InGame.Presentation.View
         [SerializeField] private ReelView[] reelViews = default;
 
         private readonly Vector3 _traceOffset = new Vector3(-0.55f, 0.6f, 0.0f);
+        private int _reelIndex = 0;
 
         // TODO: 仮の初期化なので修正する
         private void Start()
         {
-            // リールの停止
-            int index = 0;
-            this.UpdateAsObservable()
-                .Where(_ => Input.GetKeyDown(KeyCode.Space))
-                .Subscribe(_ =>
-                {
-                    if (reelViews.TryGetValue(index, out var reelView))
-                    {
-                        reelView.Stop();
-                        index++;
-                    }
-                })
-                .AddTo(this);
-
             // 出目の役
             this.UpdateAsObservable()
                 .Where(_ => Input.GetKeyDown(KeyCode.Q))
@@ -45,7 +32,7 @@ namespace Soroeru.InGame.Presentation.View
                 .Where(_ => Input.GetKeyDown(KeyCode.Return))
                 .Subscribe(_ =>
                 {
-                    index = 0;
+                    _reelIndex = 0;
                     StartRollAll();
                 })
                 .AddTo(this);
@@ -70,6 +57,15 @@ namespace Soroeru.InGame.Presentation.View
             foreach (var reelView in reelViews)
             {
                 reelView.Tick(startPositionY, endPositionY, deltaTime);
+            }
+        }
+
+        public void StopReel()
+        {
+            if (reelViews.TryGetValue(_reelIndex, out var reelView))
+            {
+                reelView.Stop();
+                _reelIndex++;
             }
         }
 

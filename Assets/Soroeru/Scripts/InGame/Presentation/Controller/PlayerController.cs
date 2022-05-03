@@ -68,6 +68,14 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            // スロット停止
+            isJump
+                .Merge(isAttack)
+                // TODO: ダメージ時
+                .Where(x => x)
+                .Subscribe(_ => _slotView.StopReel())
+                .AddTo(this);
+
             // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = this.UpdateAsObservable()
                 .Where(_ => true);
