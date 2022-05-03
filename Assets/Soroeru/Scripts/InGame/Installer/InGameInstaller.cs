@@ -1,4 +1,5 @@
 using Soroeru.InGame.Data.DataStore;
+using Soroeru.InGame.Data.Entity;
 using Soroeru.InGame.Domain.Repository;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.Presenter;
@@ -15,6 +16,7 @@ namespace Soroeru.InGame.Installer
         [SerializeField] private EquipTable equipTable = default;
         [SerializeField] private PlayerData playerData = default;
 
+        [SerializeField] private CoinCountView coinCountView = default;
         [SerializeField] private PlayerEquipView playerEquipView = default;
         [SerializeField] private SlotView slotView = default;
 
@@ -31,12 +33,16 @@ namespace Soroeru.InGame.Installer
             builder.RegisterInstance<EquipTable>(equipTable);
             builder.RegisterInstance<PlayerData>(playerData);
 
+            // Entity
+            builder.Register<CoinCountEntity>(Lifetime.Scoped);
+
             // Repository
             builder.Register<AttackRepository>(Lifetime.Scoped);
             builder.Register<EquipRepository>(Lifetime.Scoped);
             builder.Register<PlayerRepository>(Lifetime.Scoped);
 
             // UseCase
+            builder.Register<CoinCountUseCase>(Lifetime.Scoped);
             builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<PlayerAnimatorUseCase>(Lifetime.Scoped).WithParameter(animator);
             builder.Register<PlayerAttackUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
@@ -47,9 +53,11 @@ namespace Soroeru.InGame.Installer
             builder.Register<RoleUseCase>(Lifetime.Scoped);
 
             // Presenter
+            builder.RegisterEntryPoint<CoinCountPresenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<PlayerEquipPresenter>(Lifetime.Scoped);
 
             // View
+            builder.RegisterInstance<CoinCountView>(coinCountView);
             builder.RegisterInstance<PlayerEquipView>(playerEquipView);
             builder.RegisterInstance<SlotView>(slotView);
         }

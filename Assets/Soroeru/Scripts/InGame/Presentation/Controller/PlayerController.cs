@@ -11,6 +11,7 @@ namespace Soroeru.InGame.Presentation.Controller
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class PlayerController : MonoBehaviour
     {
+        private CoinCountUseCase _coinCountUseCase;
         private IPlayerInputUseCase _inputUseCase;
         private PlayerAnimatorUseCase _animatorUseCase;
         private PlayerAttackUseCase _attackUseCase;
@@ -22,12 +23,14 @@ namespace Soroeru.InGame.Presentation.Controller
         private SlotView _slotView;
 
         [Inject]
-        private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
+        private void Construct(CoinCountUseCase coinCountUseCase,
+            IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             RoleUseCase roleUseCase,
             SlotView slotView)
         {
+            _coinCountUseCase = coinCountUseCase;
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
             _attackUseCase = attackUseCase;
@@ -117,6 +120,9 @@ namespace Soroeru.InGame.Presentation.Controller
             var fixedTickAsObservable = this.FixedUpdateAsObservable()
                 .Where(_ => true);
 
+            var triggerEnterAsObservable = this.OnTriggerEnter2DAsObservable()
+                .Where(_ => true);
+
             tickAsObservable
                 .Subscribe(_ =>
                 {
@@ -137,6 +143,16 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
+                })
+                .AddTo(this);
+
+            triggerEnterAsObservable
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out CoinView coinView))
+                    {
+                        coinView.PickUp(_coinCountUseCase.Increase);
+                    }
                 })
                 .AddTo(this);
         }
