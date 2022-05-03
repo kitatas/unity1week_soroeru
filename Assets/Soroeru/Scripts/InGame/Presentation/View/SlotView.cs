@@ -15,15 +15,16 @@ namespace Soroeru.InGame.Presentation.View
         private readonly Vector3 _traceOffset = new Vector3(-0.55f, 0.6f, 0.0f);
         private int _reelIndex;
         private List<PictureType> _roleList;
+        private float _offsetHeight;
 
         public void Init()
         {
             _reelIndex = 0;
             _roleList = new List<PictureType>();
-            var moveSpeed = 1.0f;
+            _offsetHeight = reelViews[0].pictureCount * 0.1f;
             foreach (var reelView in reelViews)
             {
-                reelView.Init(moveSpeed);
+                reelView.Init(SlotConfig.REEL_ROTATE_SPEED);
             }
         }
 
@@ -32,8 +33,8 @@ namespace Soroeru.InGame.Presentation.View
             transform.position = player.position + _traceOffset;
 
             var height = transform.position.y;
-            var startPositionY = height + 0.8f;
-            var endPositionY = height - 0.8f;
+            var startPositionY = height + _offsetHeight;
+            var endPositionY = height - _offsetHeight;
             foreach (var reelView in reelViews)
             {
                 reelView.Tick(startPositionY, endPositionY, deltaTime);
