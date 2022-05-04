@@ -12,6 +12,7 @@ namespace Soroeru.InGame.Presentation.Controller
     public sealed class PlayerController : MonoBehaviour
     {
         private CoinCountUseCase _coinCountUseCase;
+        private CoinUseCase _coinUseCase;
         private IPlayerInputUseCase _inputUseCase;
         private PlayerAnimatorUseCase _animatorUseCase;
         private PlayerAttackUseCase _attackUseCase;
@@ -23,7 +24,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private SlotView _slotView;
 
         [Inject]
-        private void Construct(CoinCountUseCase coinCountUseCase,
+        private void Construct(CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
@@ -31,6 +32,7 @@ namespace Soroeru.InGame.Presentation.Controller
             SlotView slotView)
         {
             _coinCountUseCase = coinCountUseCase;
+            _coinUseCase = coinUseCase;
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
             _attackUseCase = attackUseCase;
@@ -87,6 +89,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            // 被ダメージ
             var isKnockBack = false;
             var isDamage = new ReactiveProperty<bool>(false);
             isDamage
@@ -134,6 +137,16 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            // ゲームオーバー
+            var isDead = new ReactiveProperty<bool>(false);
+            isDead
+                .Where(x => x)
+                .Subscribe(_ =>
+                {
+                    _animatorUseCase.SetDead();
+                })
+                .AddTo(this);
+
             // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = this.UpdateAsObservable()
                 .Where(_ => true);
@@ -161,6 +174,7 @@ namespace Soroeru.InGame.Presentation.Controller
 
             tickAsObservable
                 .Where(_ => isKnockBack == false)
+                .Where(_ => isDead.Value == false)
                 .Subscribe(_ =>
                 {
                     horizontal.Value = _inputUseCase.horizontal;
@@ -171,6 +185,7 @@ namespace Soroeru.InGame.Presentation.Controller
 
             fixedTickAsObservable
                 .Where(_ => isKnockBack == false)
+                .Where(_ => isDead.Value == false)
                 .Subscribe(_ =>
                 {
                     _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
@@ -195,7 +210,17 @@ namespace Soroeru.InGame.Presentation.Controller
                     if (other.TryGetComponent(out DamageView damageView))
                     {
                         if (isDamage.Value) return;
-                        isDamage.Value = true;
+
+                        if (_coinCountUseCase.count > 0)
+                        {
+                            isDamage.Value = true;
+                            var dropCount = Mathf.Max(_coinCountUseCase.count - damageView.power, 0);
+                            _coinCountUseCase.Drop(dropCount);
+                            _coinUseCase.Drop(transform.position, dropCount);
+                            return;
+                        }
+
+                        isDead.Value = true;
                         return;
                     }
                 })

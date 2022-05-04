@@ -2,9 +2,11 @@ namespace Soroeru.InGame
 {
     public sealed class LayerConfig
     {
+        public const string DEFAULT = "Default";
         public const string GROUND = "Ground";
         public const string PLAYER = "Player";
         public const string DAMAGED = "Damaged";
+        public const string DROP = "Drop";
     }
 
     public sealed class PlayerConfig

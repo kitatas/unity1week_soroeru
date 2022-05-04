@@ -16,15 +16,17 @@ namespace Soroeru.InGame.Domain.UseCase
 
         public IReadOnlyReactiveProperty<int> coinCount => _coinCount;
 
+        public int count => _coinCountEntity.value;
+
         public void Increase(int value)
         {
             _coinCountEntity.Add(value);
             _coinCount.Value = _coinCountEntity.value;
         }
 
-        public void Drop()
+        public void Drop(int value)
         {
-            _coinCountEntity.Set(0);
+            _coinCountEntity.Add(-value);
             _coinCount.Value = _coinCountEntity.value;
         }
     }
