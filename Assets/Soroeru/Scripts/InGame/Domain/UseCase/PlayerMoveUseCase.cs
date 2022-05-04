@@ -32,5 +32,14 @@ namespace Soroeru.InGame.Domain.UseCase
             var jumpPower = isHigh ? _moveData.highJump : _moveData.lowJump;
             _rigidbody2d.AddForce(jumpPower * Vector2.up);
         }
+
+        public void KnockBack(Direction direction)
+        {
+            var backVector = direction.ConvertVector() * -1;
+            var knockVector =
+                backVector * PlayerConfig.KNOCK_BACK_POWER +
+                Vector2.up * PlayerConfig.KNOCK_UP_POWER;
+            _rigidbody2d.AddForce(knockVector);
+        }
     }
 }

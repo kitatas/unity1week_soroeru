@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
 {
-    public sealed class EnemyView : MonoBehaviour
+    public sealed class EnemyView : DamageView
     {
         [SerializeField] private int hitPoint = default;
 

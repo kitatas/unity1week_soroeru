@@ -87,6 +87,27 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            var isKnockBack = false;
+            var isDamage = new ReactiveProperty<bool>(false);
+            isDamage
+                .Where(x => x)
+                .Subscribe(_ =>
+                {
+                    _animatorUseCase.SetDamage();
+                    _moveUseCase.KnockBack(direction);
+                    StartCoroutine(_spriteUseCase.Flash(PlayerConfig.INVINCIBLE_TIME));
+                    gameObject.SetLayer(LayerConfig.DAMAGED);
+
+                    isKnockBack = true;
+                    this.Delay(PlayerConfig.KNOCK_BACK_TIME, () => isKnockBack = false);
+                    this.Delay(PlayerConfig.INVINCIBLE_TIME, () =>
+                    {
+                        isDamage.Value = false;
+                        gameObject.SetLayer(LayerConfig.PLAYER);
+                    });
+                })
+                .AddTo(this);
+
             // 全てのリールが停止した時
             var reelStop = new Subject<Unit>();
             reelStop
@@ -103,7 +124,7 @@ namespace Soroeru.InGame.Presentation.Controller
             // 1つのリールを停止
             canJump
                 .Merge(isAttack)
-                // TODO: ダメージ時
+                .Merge(isDamage)
                 .Where(x => x)
                 .Where(_ => _slotView.IsReelStopAll() == false)
                 .Subscribe(_ =>
@@ -123,13 +144,12 @@ namespace Soroeru.InGame.Presentation.Controller
             var triggerEnterAsObservable = this.OnTriggerEnter2DAsObservable()
                 .Where(_ => true);
 
+            var collisionEnterAsObservable = this.OnCollisionEnter2DAsObservable()
+                .Where(_ => true);
+
             tickAsObservable
                 .Subscribe(_ =>
                 {
-                    horizontal.Value = _inputUseCase.horizontal;
-                    isJump.Value = _inputUseCase.isJump;
-                    isAttack.Value = _inputUseCase.isAttack;
-
                     var deltaTime = Time.deltaTime;
                     _slotView.Tick(transform, deltaTime);
                     _equipUseCase.Tick(deltaTime);
@@ -139,7 +159,18 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            tickAsObservable
+                .Where(_ => isKnockBack == false)
+                .Subscribe(_ =>
+                {
+                    horizontal.Value = _inputUseCase.horizontal;
+                    isJump.Value = _inputUseCase.isJump;
+                    isAttack.Value = _inputUseCase.isAttack;
+                })
+                .AddTo(this);
+
             fixedTickAsObservable
+                .Where(_ => isKnockBack == false)
                 .Subscribe(_ =>
                 {
                     _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
@@ -152,6 +183,20 @@ namespace Soroeru.InGame.Presentation.Controller
                     if (other.TryGetComponent(out CoinView coinView))
                     {
                         coinView.PickUp(_coinCountUseCase.Increase);
+                        return;
+                    }
+                })
+                .AddTo(this);
+
+            collisionEnterAsObservable
+                .Select(other => other.collider)
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out DamageView damageView))
+                    {
+                        if (isDamage.Value) return;
+                        isDamage.Value = true;
+                        return;
                     }
                 })
                 .AddTo(this);
