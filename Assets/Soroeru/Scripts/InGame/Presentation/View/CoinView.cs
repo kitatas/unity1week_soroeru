@@ -36,7 +36,7 @@ namespace Soroeru.InGame.Presentation.View
                     if (other.gameObject.layer == LayerMask.NameToLayer(LayerConfig.GROUND))
                     {
                         Destroy(rigidbody2d);
-                        gameObject.SetLayer(LayerConfig.DEFAULT);
+                        gameObject.SetLayer(LayerConfig.COIN);
                     }
                 })
                 .AddTo(this);
