@@ -34,6 +34,7 @@ namespace Soroeru.InGame
                 case PictureType.Trump:
                     return EquipType.Trump;
                 case PictureType.Puni:
+                case PictureType.None:
                     return EquipType.None;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
