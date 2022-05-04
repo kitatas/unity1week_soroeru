@@ -12,7 +12,7 @@ namespace Soroeru.InGame.Presentation.View
         {
             base.Fire(attackEntity);
 
-            GetComponent<Rigidbody2D>().velocity = moveSpeed * attackEntity.direction.ConvertVector();
+            GetComponent<Rigidbody2D>().velocity = moveSpeed * attackEntity.direction.ConvertVector2();
             GetComponent<SpriteRenderer>().flipX = attackEntity.direction == Direction.Left;
         }
     }

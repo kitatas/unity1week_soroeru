@@ -35,7 +35,7 @@ namespace Soroeru.InGame.Domain.UseCase
 
         public void KnockBack(Direction direction)
         {
-            var backVector = direction.ConvertVector() * -1;
+            var backVector = direction.ConvertVector2() * -1;
             var knockVector =
                 backVector * PlayerConfig.KNOCK_BACK_POWER +
                 Vector2.up * PlayerConfig.KNOCK_UP_POWER;
