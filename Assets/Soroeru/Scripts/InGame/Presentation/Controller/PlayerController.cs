@@ -21,6 +21,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
         private RoleUseCase _roleUseCase;
+        private SlotItemUseCase _slotItemUseCase;
         private SlotView _slotView;
 
         [Inject]
@@ -28,7 +29,7 @@ namespace Soroeru.InGame.Presentation.Controller
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
-            RoleUseCase roleUseCase,
+            RoleUseCase roleUseCase, SlotItemUseCase slotItemUseCase,
             SlotView slotView)
         {
             _coinCountUseCase = coinCountUseCase;
@@ -41,6 +42,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
             _roleUseCase = roleUseCase;
+            _slotItemUseCase = slotItemUseCase;
             _slotView = slotView;
         }
 
@@ -121,6 +123,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     var type = _roleUseCase.RunRoleAction(list);
                     Debug.Log($"role: {type}");
                     _equipUseCase.Equip(type);
+                    _slotItemUseCase.Generate(type, direction);
                 })
                 .AddTo(this);
 
@@ -233,6 +236,11 @@ namespace Soroeru.InGame.Presentation.Controller
                     }
                 })
                 .AddTo(this);
+        }
+
+        public void Jump(float jumpPower)
+        {
+            _moveUseCase.Jump(jumpPower);
         }
     }
 }

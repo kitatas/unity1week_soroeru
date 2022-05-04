@@ -30,6 +30,11 @@ namespace Soroeru.InGame.Domain.UseCase
         public void Jump(bool isHigh)
         {
             var jumpPower = isHigh ? _moveData.highJump : _moveData.lowJump;
+            Jump(jumpPower);
+        }
+
+        public void Jump(float jumpPower)
+        {
             _rigidbody2d.AddForce(jumpPower * Vector2.up);
         }
 
