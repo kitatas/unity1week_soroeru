@@ -20,6 +20,8 @@ namespace Soroeru.InGame.Presentation.View
 
         public void Drop()
         {
+            Destroy(gameObject, ItemConfig.DROP_COIN_LIFE_TIME);
+
             gameObject.SetLayer(LayerConfig.DROP);
             var x = Random.Range(-1.0f, 1.0f);
             var y = Random.Range(0.0f, 1.0f);
@@ -34,7 +36,7 @@ namespace Soroeru.InGame.Presentation.View
                     if (other.gameObject.layer == LayerMask.NameToLayer(LayerConfig.GROUND))
                     {
                         Destroy(rigidbody2d);
-                        gameObject.SetLayer(LayerConfig.DEFAULT);
+                        gameObject.SetLayer(LayerConfig.COIN);
                     }
                 })
                 .AddTo(this);

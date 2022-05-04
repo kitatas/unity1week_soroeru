@@ -124,6 +124,14 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            // 装備更新時
+            _equipUseCase.equipType
+                .Subscribe(x =>
+                {
+                    _attackUseCase.EquipWeapon(x);
+                })
+                .AddTo(this);
+
             // 1つのリールを停止
             canJump
                 .Merge(isAttack)

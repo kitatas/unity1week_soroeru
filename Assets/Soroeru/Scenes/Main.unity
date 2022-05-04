@@ -653,7 +653,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 956862869}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.89, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -939,6 +939,7 @@ MonoBehaviour:
   equipTable: {fileID: 11400000, guid: 65a0d6fa46549495986d084dfa856257, type: 2}
   itemTable: {fileID: 11400000, guid: 45c568aa1bea74a2ab81beedf5d6628d, type: 2}
   playerData: {fileID: 11400000, guid: fc504abf6c6a24647b34f38c71ee3e01, type: 2}
+  slotItemTable: {fileID: 11400000, guid: d7ca5a54db7074a48a48a6aad2531add, type: 2}
   coinCountView: {fileID: 1185662674}
   playerEquipView: {fileID: 1185662673}
   slotView: {fileID: 1807751372}
@@ -2141,10 +2142,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3245874206179393408, guid: 6cc6ee8046f9b45e584b15b2adb4969f, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3245874207513883058, guid: 6cc6ee8046f9b45e584b15b2adb4969f, type: 3}
       propertyPath: m_RootOrder
       value: 6

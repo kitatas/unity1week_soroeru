@@ -7,6 +7,11 @@ namespace Soroeru.InGame.Presentation.View
 {
     public abstract class BaseAttackCollision : MonoBehaviour
     {
+        public virtual void Equip(Transform owner, AttackEntity attackEntity)
+        {
+
+        }
+
         public virtual void Fire(AttackEntity attackEntity)
         {
             Destroy(gameObject, attackEntity.lifeTime);
