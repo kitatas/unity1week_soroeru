@@ -23,4 +23,9 @@ namespace Soroeru.InGame
         public const float REEL_ROTATE_SPEED = 1.0f;
         public const float REEL_ROTATE_INTERVAL = 5.0f;
     }
+
+    public sealed class ItemConfig
+    {
+        public const float DROP_COIN_LIFE_TIME = 3.0f;
+    }
 }
