@@ -14,12 +14,13 @@ namespace Soroeru.InGame.Presentation.View
         private float _moveSpeed;
 
         public float height => transform.position.y;
-        public float localHeight => (transform.localPosition.y);
+        public float localHeight => transform.localPosition.y;
         public PictureType type => pictureType;
 
-        public void Init(float moveSpeed)
+        public void Init(float moveSpeed, Vector3 initPosition)
         {
             _moveSpeed = moveSpeed;
+            transform.localPosition = initPosition;
         }
 
         public void Tick(float startPositionY, float endPositionY, float deltaTime)

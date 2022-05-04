@@ -12,13 +12,16 @@ namespace Soroeru.InGame.Presentation.View
         [SerializeField] private List<PictureView> pictureViews;
 
         public bool isStop { get; private set; }
+        public int pictureCount => pictureViews.Count;
 
         public void Init(float moveSpeed)
         {
             StartRoll();
-            foreach (var pictureView in pictureViews)
+
+            for (int i = 0; i < pictureCount; i++)
             {
-                pictureView.Init(moveSpeed);
+                var y = (pictureCount / 2.0f) - (i + 1);
+                pictureViews[i].Init(moveSpeed, new Vector3(0.0f, y, 0.0f));
             }
         }
 

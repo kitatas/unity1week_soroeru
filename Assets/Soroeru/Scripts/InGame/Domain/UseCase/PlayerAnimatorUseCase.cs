@@ -9,6 +9,8 @@ namespace Soroeru.InGame.Domain.UseCase
         private static readonly int _fallSpeed = Animator.StringToHash("FallSpeed");
         private static readonly int _groundDistance = Animator.StringToHash("GroundDistance");
         private static readonly int _attack = Animator.StringToHash("Attack1");
+        private static readonly int _damage = Animator.StringToHash("Damage");
+        private static readonly int _isDead = Animator.StringToHash("IsDead");
 
         public PlayerAnimatorUseCase(Animator animator)
         {
@@ -35,6 +37,17 @@ namespace Soroeru.InGame.Domain.UseCase
         public void SetAttack()
         {
             _animator.SetTrigger(_attack);
+        }
+
+        public void SetDamage()
+        {
+            _animator.SetTrigger(_damage);
+        }
+
+        public void SetDead()
+        {
+            _animator.SetTrigger(_damage);
+            _animator.SetBool(_isDead, true);
         }
     }
 }

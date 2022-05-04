@@ -1,11 +1,27 @@
+using Soroeru.InGame.Data.Entity;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
 {
     public abstract class BaseAttackCollision : MonoBehaviour
     {
-        [SerializeField] protected float lifeTime = default;
+        public virtual void Fire(AttackEntity attackEntity)
+        {
+            Destroy(gameObject, attackEntity.lifeTime);
 
-        public abstract void Fire(Transform owner, Direction direction);
+            this.OnTriggerEnter2DAsObservable()
+                .Subscribe(other =>
+                {
+                    if (other.gameObject.TryGetComponent(out EnemyView enemyView))
+                    {
+                        enemyView.ApplyDamage(attackEntity.attackPower);
+                    }
+
+                    Destroy(gameObject);
+                })
+                .AddTo(this);
+        }
     }
 }

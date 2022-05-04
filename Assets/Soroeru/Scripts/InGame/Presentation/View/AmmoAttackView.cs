@@ -1,3 +1,4 @@
+using Soroeru.InGame.Data.Entity;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -7,19 +8,12 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private float moveSpeed = default;
 
-        public override void Fire(Transform owner, Direction direction)
+        public override void Fire(AttackEntity attackEntity)
         {
-            GetComponent<Rigidbody2D>().velocity = moveSpeed * direction.ConvertVector();
+            base.Fire(attackEntity);
 
-            Destroy(gameObject, lifeTime);
-        }
-
-        private void OnTriggerEnter2D(Collider2D col)
-        {
-            // TODO: 敵判定？
-            {
-                Destroy(gameObject);
-            }
+            GetComponent<Rigidbody2D>().velocity = moveSpeed * attackEntity.direction.ConvertVector();
+            GetComponent<SpriteRenderer>().flipX = attackEntity.direction == Direction.Left;
         }
     }
 }

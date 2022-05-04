@@ -11,6 +11,8 @@ namespace Soroeru.InGame.Presentation.Controller
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class PlayerController : MonoBehaviour
     {
+        private CoinCountUseCase _coinCountUseCase;
+        private CoinUseCase _coinUseCase;
         private IPlayerInputUseCase _inputUseCase;
         private PlayerAnimatorUseCase _animatorUseCase;
         private PlayerAttackUseCase _attackUseCase;
@@ -22,12 +24,15 @@ namespace Soroeru.InGame.Presentation.Controller
         private SlotView _slotView;
 
         [Inject]
-        private void Construct(IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
+        private void Construct(CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
+            IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             RoleUseCase roleUseCase,
             SlotView slotView)
         {
+            _coinCountUseCase = coinCountUseCase;
+            _coinUseCase = coinUseCase;
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
             _attackUseCase = attackUseCase;
@@ -84,6 +89,28 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            // 被ダメージ
+            var isKnockBack = false;
+            var isDamage = new ReactiveProperty<bool>(false);
+            isDamage
+                .Where(x => x)
+                .Subscribe(_ =>
+                {
+                    _animatorUseCase.SetDamage();
+                    _moveUseCase.KnockBack(direction);
+                    StartCoroutine(_spriteUseCase.Flash(PlayerConfig.INVINCIBLE_TIME));
+                    gameObject.SetLayer(LayerConfig.DAMAGED);
+
+                    isKnockBack = true;
+                    this.Delay(PlayerConfig.KNOCK_BACK_TIME, () => isKnockBack = false);
+                    this.Delay(PlayerConfig.INVINCIBLE_TIME, () =>
+                    {
+                        isDamage.Value = false;
+                        gameObject.SetLayer(LayerConfig.PLAYER);
+                    });
+                })
+                .AddTo(this);
+
             // 全てのリールが停止した時
             var reelStop = new Subject<Unit>();
             reelStop
@@ -100,13 +127,23 @@ namespace Soroeru.InGame.Presentation.Controller
             // 1つのリールを停止
             canJump
                 .Merge(isAttack)
-                // TODO: ダメージ時
+                .Merge(isDamage)
                 .Where(x => x)
                 .Where(_ => _slotView.IsReelStopAll() == false)
                 .Subscribe(_ =>
                 {
                     _slotView.StopReel();
                     reelStop.OnNext(Unit.Default);
+                })
+                .AddTo(this);
+
+            // ゲームオーバー
+            var isDead = new ReactiveProperty<bool>(false);
+            isDead
+                .Where(x => x)
+                .Subscribe(_ =>
+                {
+                    _animatorUseCase.SetDead();
                 })
                 .AddTo(this);
 
@@ -117,13 +154,15 @@ namespace Soroeru.InGame.Presentation.Controller
             var fixedTickAsObservable = this.FixedUpdateAsObservable()
                 .Where(_ => true);
 
+            var triggerEnterAsObservable = this.OnTriggerEnter2DAsObservable()
+                .Where(_ => true);
+
+            var collisionEnterAsObservable = this.OnCollisionEnter2DAsObservable()
+                .Where(_ => true);
+
             tickAsObservable
                 .Subscribe(_ =>
                 {
-                    horizontal.Value = _inputUseCase.horizontal;
-                    isJump.Value = _inputUseCase.isJump;
-                    isAttack.Value = _inputUseCase.isAttack;
-
                     var deltaTime = Time.deltaTime;
                     _slotView.Tick(transform, deltaTime);
                     _equipUseCase.Tick(deltaTime);
@@ -133,10 +172,57 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(this);
 
+            tickAsObservable
+                .Where(_ => isKnockBack == false)
+                .Where(_ => isDead.Value == false)
+                .Subscribe(_ =>
+                {
+                    horizontal.Value = _inputUseCase.horizontal;
+                    isJump.Value = _inputUseCase.isJump;
+                    isAttack.Value = _inputUseCase.isAttack;
+                })
+                .AddTo(this);
+
             fixedTickAsObservable
+                .Where(_ => isKnockBack == false)
+                .Where(_ => isDead.Value == false)
                 .Subscribe(_ =>
                 {
                     _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
+                })
+                .AddTo(this);
+
+            triggerEnterAsObservable
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out CoinView coinView))
+                    {
+                        coinView.PickUp(_coinCountUseCase.Increase);
+                        return;
+                    }
+                })
+                .AddTo(this);
+
+            collisionEnterAsObservable
+                .Select(other => other.collider)
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out DamageView damageView))
+                    {
+                        if (isDamage.Value) return;
+
+                        if (_coinCountUseCase.count > 0)
+                        {
+                            isDamage.Value = true;
+                            var dropCount = Mathf.Max(_coinCountUseCase.count - damageView.power, 0);
+                            _coinCountUseCase.Drop(dropCount);
+                            _coinUseCase.Drop(transform.position, dropCount);
+                            return;
+                        }
+
+                        isDead.Value = true;
+                        return;
+                    }
                 })
                 .AddTo(this);
         }
