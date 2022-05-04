@@ -31,7 +31,8 @@ namespace Soroeru.InGame
             {
                 case PictureType.Gun:
                     return EquipType.Gun;
-                case PictureType.Flag:
+                case PictureType.Trump:
+                    return EquipType.Trump;
                 case PictureType.Puni:
                     return EquipType.None;
                 default:

@@ -1,6 +1,5 @@
 using System;
 using EFUK;
-using Soroeru.InGame.Data.DataStore;
 using Soroeru.InGame.Domain.Repository;
 using UniRx;
 using UnityEngine;
@@ -12,18 +11,21 @@ namespace Soroeru.InGame.Domain.UseCase
         private readonly EquipRepository _equipRepository;
         private readonly ReactiveProperty<Sprite> _equipSprite;
         private readonly ReactiveProperty<float> _equipLifeTime;
-        public EquipType currentEquip { get; private set; }
+        private readonly ReactiveProperty<EquipType> _equipType;
+        public EquipType currentEquip => _equipType.Value;
 
         public PlayerEquipUseCase(EquipRepository equipRepository)
         {
             _equipRepository = equipRepository;
             _equipSprite = new ReactiveProperty<Sprite>();
             _equipLifeTime = new ReactiveProperty<float>();
+            _equipType = new ReactiveProperty<EquipType>();
             Equip(EquipType.None);
         }
 
         public IReadOnlyReactiveProperty<Sprite> equipSprite => _equipSprite;
         public IReadOnlyReactiveProperty<float> equipLifeTime => _equipLifeTime;
+        public IReadOnlyReactiveProperty<EquipType> equipType => _equipType;
 
         public void Equip(EquipType type)
         {
@@ -40,7 +42,7 @@ namespace Soroeru.InGame.Domain.UseCase
 
             _equipSprite.Value = data.sprite;
             _equipLifeTime.Value = data.time;
-            currentEquip = data.type;
+            _equipType.Value = data.type;
         }
 
         public void Equip(PictureType type)
