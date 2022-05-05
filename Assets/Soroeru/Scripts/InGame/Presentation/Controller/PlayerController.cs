@@ -20,7 +20,6 @@ namespace Soroeru.InGame.Presentation.Controller
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
-        private RoleUseCase _roleUseCase;
         private SlotItemUseCase _slotItemUseCase;
         private SlotView _slotView;
 
@@ -29,7 +28,7 @@ namespace Soroeru.InGame.Presentation.Controller
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
-            RoleUseCase roleUseCase, SlotItemUseCase slotItemUseCase,
+            SlotItemUseCase slotItemUseCase,
             SlotView slotView)
         {
             _coinCountUseCase = coinCountUseCase;
@@ -41,7 +40,6 @@ namespace Soroeru.InGame.Presentation.Controller
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
-            _roleUseCase = roleUseCase;
             _slotItemUseCase = slotItemUseCase;
             _slotView = slotView;
         }
@@ -119,8 +117,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(_ => _slotView.IsReelStopAll())
                 .Subscribe(_ =>
                 {
-                    var list = _slotView.GetRole();
-                    var type = _roleUseCase.RunRoleAction(list);
+                    var type = _slotView.GetRole();
                     Debug.Log($"role: {type}");
                     _equipUseCase.Equip(type);
                     _slotItemUseCase.Generate(type, direction);

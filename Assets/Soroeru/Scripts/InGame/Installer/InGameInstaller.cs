@@ -61,7 +61,6 @@ namespace Soroeru.InGame.Installer
             builder.Register<PlayerMoveUseCase>(Lifetime.Scoped).WithParameter(rigidbody2d);
             builder.Register<PlayerRayUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerSpriteUseCase>(Lifetime.Scoped).WithParameter(spriteRenderer);
-            builder.Register<RoleUseCase>(Lifetime.Scoped);
             builder.Register<SlotItemUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
 
             // Presenter
