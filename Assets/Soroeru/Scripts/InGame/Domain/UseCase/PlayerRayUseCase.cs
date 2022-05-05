@@ -7,7 +7,7 @@ namespace Soroeru.InGame.Domain.UseCase
         private readonly Transform _transform;
         private readonly int _layerMask;
 
-        private const float DISTANCE = 0.35f;
+        private const float DISTANCE = 0.4f;
 
         public PlayerRayUseCase(Transform transform)
         {

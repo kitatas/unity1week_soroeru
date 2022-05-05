@@ -222,7 +222,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         if (_coinCountUseCase.count > 0)
                         {
                             isDamage.Value = true;
-                            var dropCount = Mathf.Max(_coinCountUseCase.count - damageView.power, 0);
+                            var dropCount = Mathf.Min(_coinCountUseCase.count, damageView.power);
                             _coinCountUseCase.Drop(dropCount);
                             _coinUseCase.Drop(transform.position, dropCount);
                             return;
