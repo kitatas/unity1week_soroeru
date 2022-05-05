@@ -936,6 +936,7 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 956862869}
   attackTable: {fileID: 11400000, guid: b57bd0311b9ab43b288aa14cfd02ec00, type: 2}
+  buffTable: {fileID: 11400000, guid: 2416b6c5ad02c45e0a0c4406b352b37f, type: 2}
   equipTable: {fileID: 11400000, guid: 65a0d6fa46549495986d084dfa856257, type: 2}
   itemTable: {fileID: 11400000, guid: 45c568aa1bea74a2ab81beedf5d6628d, type: 2}
   playerData: {fileID: 11400000, guid: fc504abf6c6a24647b34f38c71ee3e01, type: 2}
