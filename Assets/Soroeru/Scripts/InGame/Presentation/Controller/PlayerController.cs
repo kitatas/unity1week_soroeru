@@ -207,6 +207,23 @@ namespace Soroeru.InGame.Presentation.Controller
                         coinView.PickUp(_coinCountUseCase.Increase);
                         return;
                     }
+                    
+                    if (other.TryGetComponent(out DamageView damageView))
+                    {
+                        if (isDamage.Value) return;
+
+                        if (_coinCountUseCase.count > 0)
+                        {
+                            isDamage.Value = true;
+                            var dropCount = Mathf.Min(_coinCountUseCase.count, damageView.power);
+                            _coinCountUseCase.Drop(dropCount);
+                            _coinUseCase.Drop(transform.position, dropCount);
+                            return;
+                        }
+
+                        isDead.Value = true;
+                        return;
+                    }
                 })
                 .AddTo(this);
 

@@ -11,6 +11,7 @@ namespace Soroeru.InGame
     {
         None,
         Jump,
+        Bomb,
     }
 
     public enum Direction
@@ -25,5 +26,6 @@ namespace Soroeru.InGame
         Gun  = 1,
         Trump = 2,
         Jump = 3,
+        Bomb = 4,
     }
 }
