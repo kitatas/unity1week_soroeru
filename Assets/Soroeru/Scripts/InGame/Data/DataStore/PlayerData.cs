@@ -15,9 +15,14 @@ namespace Soroeru.InGame.Data.DataStore
     public sealed class PlayerMoveData
     {
         [SerializeField] private float moveSpeed = default;
+        [SerializeField] private float powerUpMoveSpeed = default;
         [SerializeField] private float jumpPower = default;
 
-        public float speed => moveSpeed;
         public float jump => jumpPower;
+
+        public float GetMoveSpeed(bool isPowerUp)
+        {
+            return isPowerUp ? powerUpMoveSpeed : moveSpeed;
+        }
     }
 }

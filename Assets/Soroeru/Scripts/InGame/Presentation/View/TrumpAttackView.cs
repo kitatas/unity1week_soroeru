@@ -8,13 +8,13 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private List<CardAttackView> cardAttackViews = default;
 
-        public override void Equip(Transform owner, AttackEntity attackEntity)
+        public override void Equip(AttackEntity attackEntity)
         {
-            transform.SetParent(owner);
+            transform.SetParent(attackEntity.owner);
 
             foreach (var cardAttackView in cardAttackViews)
             {
-                cardAttackView.Init(owner, attackEntity.attackPower);
+                cardAttackView.Init(attackEntity.owner, attackEntity.attackPower);
             }
         }
 

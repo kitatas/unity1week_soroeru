@@ -8,16 +8,23 @@ namespace Soroeru.InGame.Domain.UseCase
     {
         private readonly Rigidbody2D _rigidbody2d;
         private readonly PlayerMoveData _moveData;
+        private bool _isPowerUp;
 
         public PlayerMoveUseCase(Rigidbody2D rigidbody2D, PlayerRepository playerRepository)
         {
             _rigidbody2d = rigidbody2D;
             _moveData = playerRepository.GetMoveData();
+            _isPowerUp = false;
         }
 
         public void SetVelocityX(float x)
         {
-            _rigidbody2d.velocity = _moveData.speed * x * Vector2.right + GetGravityVector();
+            _rigidbody2d.velocity = _moveData.GetMoveSpeed(_isPowerUp) * x * Vector2.right + GetGravityVector();
+        }
+
+        public void SetPowerUp(bool isPowerUp)
+        {
+            _isPowerUp = isPowerUp;
         }
 
         private Vector2 GetGravityVector()

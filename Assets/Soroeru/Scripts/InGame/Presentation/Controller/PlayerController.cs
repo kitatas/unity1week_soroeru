@@ -1,4 +1,6 @@
+using System;
 using EFUK;
+using Soroeru.InGame.Data.Entity;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.View;
 using UniRx;
@@ -11,6 +13,8 @@ namespace Soroeru.InGame.Presentation.Controller
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class PlayerController : MonoBehaviour
     {
+        [SerializeField] private ArmorAttackView armorAttackView = default;
+
         private BuffUseCase _buffUseCase;
         private CoinCountUseCase _coinCountUseCase;
         private CoinUseCase _coinUseCase;
@@ -173,9 +177,37 @@ namespace Soroeru.InGame.Presentation.Controller
                 return;
             }
 
+            var powerUpTime = 0.0f;
+            Action cancelPowerUp = null;
+            void PowerUp(int lifeTime)
+            {
+                powerUpTime = lifeTime;
+                if (cancelPowerUp != null)
+                {
+                    return;
+                }
+
+                gameObject.SetLayer(LayerConfig.DAMAGED);
+                var armor = Instantiate(armorAttackView, transform.position, Quaternion.identity);
+                var attackEntity = new AttackEntity(transform, direction, lifeTime, 999);
+                armor.Fire(attackEntity);
+
+                _moveUseCase.SetPowerUp(true);
+
+                cancelPowerUp = () =>
+                {
+                    cancelPowerUp = null;
+                    gameObject.SetLayer(LayerConfig.PLAYER);
+                    Destroy(armor.gameObject);
+                    _spriteUseCase.SetColor(Color.white);
+                    _moveUseCase.SetPowerUp(false);
+                };
+            }
+
             // Buff系
             {
                 _buffUseCase.Push(BuffType.Skull, Damage);
+                _buffUseCase.Push(BuffType.Seven, PowerUp);
             }
 
             // TODO: メニュー開いている場合は動かさない
@@ -198,6 +230,17 @@ namespace Soroeru.InGame.Presentation.Controller
                     _slotView.Tick(transform, deltaTime);
                     _equipUseCase.Tick(deltaTime);
                     _moveUseCase.Tick(deltaTime, _inputUseCase.isJumping);
+
+                    if (cancelPowerUp != null)
+                    {
+                        _spriteUseCase.PlayRainbow();
+                        _coinUseCase.Drop(_slotView.GetDropCoinPosition(), 1);
+                        powerUpTime -= deltaTime;
+                        if (powerUpTime < 0.0f)
+                        {
+                            cancelPowerUp.Invoke();
+                        }
+                    }
 
                     _animatorUseCase.SetGround(_rayUseCase.IsGround());
                     _animatorUseCase.SetFall(_moveUseCase.gravity);
@@ -223,6 +266,10 @@ namespace Soroeru.InGame.Presentation.Controller
                         else if (Input.GetKeyDown(KeyCode.K))
                         {
                             _buffUseCase.SetUp(BuffType.Skull);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha7))
+                        {
+                            _buffUseCase.SetUp(BuffType.Seven);
                         }
                     }
                 })
@@ -256,7 +303,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         coinView.PickUp(_coinCountUseCase.Increase);
                         return;
                     }
-                    
+
                     if (other.TryGetComponent(out DamageView damageView))
                     {
                         Damage(damageView.power);

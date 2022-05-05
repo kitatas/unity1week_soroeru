@@ -94,7 +94,7 @@ namespace Soroeru.InGame.Domain.UseCase
             {
                 _attackCollision = Object.Instantiate(data.collision, _transform.position, Quaternion.identity);
                 var attackEntity = new AttackEntity(_transform, default, data.time, data.power);
-                _attackCollision.Equip(_transform, attackEntity);
+                _attackCollision.Equip(attackEntity);
             }
             else
             {

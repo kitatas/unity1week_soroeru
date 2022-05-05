@@ -13,6 +13,7 @@ namespace Soroeru.InGame.Presentation.View
         [SerializeField] private ReelView[] reelViews = default;
 
         private readonly Vector3 _traceOffset = new Vector3(-0.55f, 0.6f, 0.0f);
+        private readonly Vector3 _dropOffset = new Vector3(0.0f, 0.25f, 0.0f);
         private int _reelIndex;
         private List<PictureType> _roleList;
         private float _offsetHeight;
@@ -78,6 +79,11 @@ namespace Soroeru.InGame.Presentation.View
             {
                 reelView.StartRoll();
             }
+        }
+
+        public Vector3 GetDropCoinPosition()
+        {
+            return transform.position + _dropOffset;
         }
     }
 }
