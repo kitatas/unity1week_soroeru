@@ -51,7 +51,7 @@ namespace Soroeru.InGame.Domain.UseCase
             }
             else
             {
-                var initPosition = _transform.position + direction.ConvertOffset();
+                var initPosition = _transform.position + (direction.ConvertVector3() * 0.3f);
                 var collision = Object.Instantiate(data.collision, initPosition, Quaternion.identity);
                 var attackEntity = new AttackEntity(_transform, direction, data.time, data.power);
                 collision.Fire(attackEntity);

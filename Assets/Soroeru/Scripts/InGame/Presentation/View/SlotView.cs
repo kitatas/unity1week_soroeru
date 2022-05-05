@@ -55,7 +55,7 @@ namespace Soroeru.InGame.Presentation.View
             return reelViews.All(x => x.isStop);
         }
 
-        public List<PictureType> GetRole()
+        public PictureType GetRole()
         {
             // 一定時間後、再回転
             this.Delay(SlotConfig.REEL_ROTATE_INTERVAL, StartRollAll);
@@ -66,7 +66,8 @@ namespace Soroeru.InGame.Presentation.View
                 _roleList.Add(reelView.GetHitPictureType());
             }
 
-            return _roleList;
+            var distinct = _roleList.Distinct();
+            return distinct.Count() == 1 ? _roleList[0] : PictureType.None;
         }
 
         private void StartRollAll()

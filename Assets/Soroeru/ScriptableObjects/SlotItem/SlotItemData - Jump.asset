@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 971dab1be3f24a77a57e4bd798b81fb9, type: 3}
-  m_Name: AttackData - Punch
+  m_Script: {fileID: 11500000, guid: acf76342e7d64e95ab64bd5cb461c6ae, type: 3}
+  m_Name: SlotItemData - Jump
   m_EditorClassIdentifier: 
-  equipType: 0
-  attackCollision: {fileID: 3449386227453235739, guid: 32dbf26d2cdd143d798a819a04757d84, type: 3}
-  isFirstGenerate: 0
-  lifeTime: 1
-  attackPower: 1
+  itemType: 1
+  slotItem: {fileID: 7730102761763534639, guid: 8d510468dd39847dfa05766d3091a319, type: 3}
+  lifeTime: 10

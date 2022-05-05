@@ -7,6 +7,13 @@ namespace Soroeru.InGame
         Trump,
     }
 
+    public enum ItemType
+    {
+        None,
+        Jump,
+        Bomb,
+    }
+
     public enum Direction
     {
         Left,
@@ -18,6 +25,7 @@ namespace Soroeru.InGame
         None = 0,
         Gun  = 1,
         Trump = 2,
-        Puni = 3,
+        Jump = 3,
+        Bomb = 4,
     }
 }

@@ -17,7 +17,7 @@ namespace Soroeru.InGame.Presentation.View
 
         public void SetLifeTime(float lifeTime)
         {
-            lifeTimeText.text = lifeTime.EqualZero() ? $"---" : $"{lifeTime: 0.00}";
+            lifeTimeText.text = lifeTime.EqualZero() ? $"---" : $"{lifeTime:0.00}";
         }
     }
 }

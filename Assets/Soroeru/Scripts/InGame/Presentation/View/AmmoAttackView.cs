@@ -1,4 +1,6 @@
 using Soroeru.InGame.Data.Entity;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -7,12 +9,29 @@ namespace Soroeru.InGame.Presentation.View
     public sealed class AmmoAttackView : BaseAttackCollision
     {
         [SerializeField] private float moveSpeed = default;
+        [SerializeField] private Collider2D body = default;
+        [SerializeField] private Collider2D around = default;
 
         public override void Fire(AttackEntity attackEntity)
         {
-            base.Fire(attackEntity);
+            Destroy(gameObject, attackEntity.lifeTime);
 
-            GetComponent<Rigidbody2D>().velocity = moveSpeed * attackEntity.direction.ConvertVector();
+            around.OnTriggerEnter2DAsObservable()
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out EnemyView enemyView))
+                    {
+                        enemyView.ApplyDamage(attackEntity.attackPower);
+                    }
+
+                    if (!other.TryGetComponent(out BombView bombView))
+                    {
+                        Destroy(gameObject);
+                    }
+                })
+                .AddTo(this);
+
+            GetComponent<Rigidbody2D>().velocity = moveSpeed * attackEntity.direction.ConvertVector2();
             GetComponent<SpriteRenderer>().flipX = attackEntity.direction == Direction.Left;
         }
     }

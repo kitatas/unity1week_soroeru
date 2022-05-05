@@ -20,7 +20,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private PlayerMoveUseCase _moveUseCase;
         private PlayerRayUseCase _rayUseCase;
         private PlayerSpriteUseCase _spriteUseCase;
-        private RoleUseCase _roleUseCase;
+        private SlotItemUseCase _slotItemUseCase;
         private SlotView _slotView;
 
         [Inject]
@@ -28,7 +28,7 @@ namespace Soroeru.InGame.Presentation.Controller
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
-            RoleUseCase roleUseCase,
+            SlotItemUseCase slotItemUseCase,
             SlotView slotView)
         {
             _coinCountUseCase = coinCountUseCase;
@@ -40,7 +40,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
-            _roleUseCase = roleUseCase;
+            _slotItemUseCase = slotItemUseCase;
             _slotView = slotView;
         }
 
@@ -72,9 +72,7 @@ namespace Soroeru.InGame.Presentation.Controller
             canJump
                 .Subscribe(_ =>
                 {
-                    // TODO: 長押し判定はここで行う？
-                    var isLongDown = _;
-                    _moveUseCase.Jump(isLongDown);
+                    _moveUseCase.Jump();
                 })
                 .AddTo(this);
 
@@ -117,10 +115,10 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(_ => _slotView.IsReelStopAll())
                 .Subscribe(_ =>
                 {
-                    var list = _slotView.GetRole();
-                    var type = _roleUseCase.RunRoleAction(list);
+                    var type = _slotView.GetRole();
                     Debug.Log($"role: {type}");
                     _equipUseCase.Equip(type);
+                    _slotItemUseCase.Generate(type, direction);
                 })
                 .AddTo(this);
 
@@ -174,9 +172,30 @@ namespace Soroeru.InGame.Presentation.Controller
                     var deltaTime = Time.deltaTime;
                     _slotView.Tick(transform, deltaTime);
                     _equipUseCase.Tick(deltaTime);
+                    _moveUseCase.Tick(deltaTime, _inputUseCase.isJumping);
 
                     _animatorUseCase.SetGround(_rayUseCase.IsGround());
                     _animatorUseCase.SetFall(_moveUseCase.gravity);
+
+                    // TODO: Debugのため、あとで消す
+                    {
+                        if (Input.GetKeyDown(KeyCode.G))
+                        {
+                            _equipUseCase.Equip(EquipType.Gun);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.T))
+                        {
+                            _equipUseCase.Equip(EquipType.Trump);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.J))
+                        {
+                            _slotItemUseCase.Generate(ItemType.Jump, direction);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.B))
+                        {
+                            _slotItemUseCase.Generate(ItemType.Bomb, direction);
+                        }
+                    }
                 })
                 .AddTo(this);
 
@@ -208,6 +227,23 @@ namespace Soroeru.InGame.Presentation.Controller
                         coinView.PickUp(_coinCountUseCase.Increase);
                         return;
                     }
+                    
+                    if (other.TryGetComponent(out DamageView damageView))
+                    {
+                        if (isDamage.Value) return;
+
+                        if (_coinCountUseCase.count > 0)
+                        {
+                            isDamage.Value = true;
+                            var dropCount = Mathf.Min(_coinCountUseCase.count, damageView.power);
+                            _coinCountUseCase.Drop(dropCount);
+                            _coinUseCase.Drop(transform.position, dropCount);
+                            return;
+                        }
+
+                        isDead.Value = true;
+                        return;
+                    }
                 })
                 .AddTo(this);
 
@@ -222,7 +258,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         if (_coinCountUseCase.count > 0)
                         {
                             isDamage.Value = true;
-                            var dropCount = Mathf.Max(_coinCountUseCase.count - damageView.power, 0);
+                            var dropCount = Mathf.Min(_coinCountUseCase.count, damageView.power);
                             _coinCountUseCase.Drop(dropCount);
                             _coinUseCase.Drop(transform.position, dropCount);
                             return;
@@ -233,6 +269,11 @@ namespace Soroeru.InGame.Presentation.Controller
                     }
                 })
                 .AddTo(this);
+        }
+
+        public void Jump(float jumpPower)
+        {
+            _moveUseCase.Jump(jumpPower);
         }
     }
 }

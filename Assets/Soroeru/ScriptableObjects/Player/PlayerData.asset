@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMoveData:
     moveSpeed: 2
-    lowJumpPower: 150
-    highJumpPower: 300
+    jumpPower: 5

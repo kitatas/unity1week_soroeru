@@ -29,4 +29,10 @@ namespace Soroeru.InGame
     {
         public const float DROP_COIN_LIFE_TIME = 3.0f;
     }
+
+    public sealed class SlotItemConfig
+    {
+        public const int BOMB_IGNITE_COUNT = 5;
+        public const float BOMB_EXPLODE_SIZE = 1.5f;
+    }
 }
