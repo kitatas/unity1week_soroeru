@@ -176,6 +176,26 @@ namespace Soroeru.InGame.Presentation.Controller
 
                     _animatorUseCase.SetGround(_rayUseCase.IsGround());
                     _animatorUseCase.SetFall(_moveUseCase.gravity);
+
+                    // TODO: Debugのため、あとで消す
+                    {
+                        if (Input.GetKeyDown(KeyCode.G))
+                        {
+                            _equipUseCase.Equip(EquipType.Gun);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.T))
+                        {
+                            _equipUseCase.Equip(EquipType.Trump);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.J))
+                        {
+                            _slotItemUseCase.Generate(ItemType.Jump, direction);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.B))
+                        {
+                            _slotItemUseCase.Generate(ItemType.Bomb, direction);
+                        }
+                    }
                 })
                 .AddTo(this);
 
