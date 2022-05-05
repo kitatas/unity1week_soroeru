@@ -29,15 +29,23 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 55c49909c27444ac684573915a9f4e32, type: 3}
     - target: {fileID: 5133180583623132232, guid: d1650d5d954de4d6e92379044be77527, type: 3}
       propertyPath: pictureType
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5167514279110932997, guid: d1650d5d954de4d6e92379044be77527, type: 3}
       propertyPath: m_Name
-      value: Picture Variant - 8
+      value: Picture Variant - Bomb
       objectReference: {fileID: 0}
     - target: {fileID: 7249193078264462183, guid: d1650d5d954de4d6e92379044be77527, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7249193078264462183, guid: d1650d5d954de4d6e92379044be77527, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7249193078264462183, guid: d1650d5d954de4d6e92379044be77527, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7249193078264462183, guid: d1650d5d954de4d6e92379044be77527, type: 3}
       propertyPath: m_LocalPosition.x
@@ -90,7 +98,7 @@ PrefabInstance:
     - target: {fileID: 8467204478253918767, guid: d1650d5d954de4d6e92379044be77527, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 55c49909c27444ac684573915a9f4e32, type: 3}
+      objectReference: {fileID: 21300000, guid: efae186968639467fba76b72402221dc, type: 3}
     - target: {fileID: 8467204478253918767, guid: d1650d5d954de4d6e92379044be77527, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
