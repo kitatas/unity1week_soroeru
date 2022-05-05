@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equipType: 0
   attackCollision: {fileID: 3449386227453235739, guid: 32dbf26d2cdd143d798a819a04757d84, type: 3}
-  lifeTime: 100
+  isFirstGenerate: 0
+  lifeTime: 1
   attackPower: 1
