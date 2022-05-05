@@ -671,6 +671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0df443fdb354fac876c34b1cd6462a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  armorAttackView: {fileID: 4530509189821255855, guid: 5bd505761b5104b64b388f28f7be0578, type: 3}
 --- !u!61 &956862874
 BoxCollider2D:
   m_ObjectHideFlags: 0
