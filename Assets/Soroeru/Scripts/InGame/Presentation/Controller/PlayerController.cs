@@ -72,9 +72,7 @@ namespace Soroeru.InGame.Presentation.Controller
             canJump
                 .Subscribe(_ =>
                 {
-                    // TODO: 長押し判定はここで行う？
-                    var isLongDown = _;
-                    _moveUseCase.Jump(isLongDown);
+                    _moveUseCase.Jump();
                 })
                 .AddTo(this);
 
@@ -174,6 +172,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     var deltaTime = Time.deltaTime;
                     _slotView.Tick(transform, deltaTime);
                     _equipUseCase.Tick(deltaTime);
+                    _moveUseCase.Tick(deltaTime, _inputUseCase.isJumping);
 
                     _animatorUseCase.SetGround(_rayUseCase.IsGround());
                     _animatorUseCase.SetFall(_moveUseCase.gravity);

@@ -27,15 +27,23 @@ namespace Soroeru.InGame.Domain.UseCase
 
         public float gravity => _rigidbody2d.velocity.y;
 
-        public void Jump(bool isHigh)
+        public void Jump()
         {
-            var jumpPower = isHigh ? _moveData.highJump : _moveData.lowJump;
-            Jump(jumpPower);
+            Jump(_moveData.jump);
         }
 
         public void Jump(float jumpPower)
         {
-            _rigidbody2d.AddForce(jumpPower * Vector2.up);
+            _rigidbody2d.velocity = new Vector2(_rigidbody2d.velocity.x, 0) + jumpPower * Vector2.up;
+        }
+
+        public void Tick(float deltaTime, bool inputKey)
+        {
+            if (_rigidbody2d.velocity.y < 0 ||
+                _rigidbody2d.velocity.y > 0 && !inputKey)
+            {
+                _rigidbody2d.velocity += Physics2D.gravity.y * deltaTime * 0.5f * Vector2.up;
+            }
         }
 
         public void KnockBack(Direction direction)

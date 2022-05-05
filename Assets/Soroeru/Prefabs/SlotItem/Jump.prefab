@@ -144,7 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b99d9599c10f48b3bf4724f8ddf23923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpPower: 300
+  jumpPower: 6
   filter2d:
     useTriggers: 0
     useLayerMask: 0
