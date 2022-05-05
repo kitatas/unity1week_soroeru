@@ -14,6 +14,7 @@ namespace Soroeru.InGame.Installer
     public sealed class InGameInstaller : LifetimeScope
     {
         [SerializeField] private AttackTable attackTable = default;
+        [SerializeField] private BuffTable buffTable = default;
         [SerializeField] private EquipTable equipTable = default;
         [SerializeField] private ItemTable itemTable = default;
         [SerializeField] private PlayerData playerData = default;
@@ -33,6 +34,7 @@ namespace Soroeru.InGame.Installer
         {
             // DataStore
             builder.RegisterInstance<AttackTable>(attackTable);
+            builder.RegisterInstance<BuffTable>(buffTable);
             builder.RegisterInstance<EquipTable>(equipTable);
             builder.RegisterInstance<ItemTable>(itemTable);
             builder.RegisterInstance<PlayerData>(playerData);
@@ -46,12 +48,14 @@ namespace Soroeru.InGame.Installer
 
             // Repository
             builder.Register<AttackRepository>(Lifetime.Scoped);
+            builder.Register<BuffRepository>(Lifetime.Scoped);
             builder.Register<EquipRepository>(Lifetime.Scoped);
             builder.Register<ItemRepository>(Lifetime.Scoped);
             builder.Register<PlayerRepository>(Lifetime.Scoped);
             builder.Register<SlotItemRepository>(Lifetime.Scoped);
 
             // UseCase
+            builder.Register<BuffUseCase>(Lifetime.Scoped);
             builder.Register<CoinCountUseCase>(Lifetime.Scoped);
             builder.Register<CoinUseCase>(Lifetime.Scoped);
             builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();

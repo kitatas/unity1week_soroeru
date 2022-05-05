@@ -11,6 +11,7 @@ namespace Soroeru.InGame.Presentation.Controller
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class PlayerController : MonoBehaviour
     {
+        private BuffUseCase _buffUseCase;
         private CoinCountUseCase _coinCountUseCase;
         private CoinUseCase _coinUseCase;
         private IPlayerInputUseCase _inputUseCase;
@@ -24,13 +25,14 @@ namespace Soroeru.InGame.Presentation.Controller
         private SlotView _slotView;
 
         [Inject]
-        private void Construct(CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
+        private void Construct(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase,
             SlotView slotView)
         {
+            _buffUseCase = buffUseCase;
             _coinCountUseCase = coinCountUseCase;
             _coinUseCase = coinUseCase;
             _inputUseCase = inputUseCase;
@@ -119,6 +121,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     Debug.Log($"role: {type}");
                     _equipUseCase.Equip(type);
                     _slotItemUseCase.Generate(type, direction);
+                    _buffUseCase.SetUp(type);
                 })
                 .AddTo(this);
 
@@ -152,6 +155,28 @@ namespace Soroeru.InGame.Presentation.Controller
                     _animatorUseCase.SetDead();
                 })
                 .AddTo(this);
+
+            void Damage(int damageValue)
+            {
+                if (isDamage.Value) return;
+
+                if (_coinCountUseCase.count > 0)
+                {
+                    isDamage.Value = true;
+                    var dropCount = Mathf.Min(_coinCountUseCase.count, damageValue);
+                    _coinCountUseCase.Drop(dropCount);
+                    _coinUseCase.Drop(transform.position, dropCount);
+                    return;
+                }
+
+                isDead.Value = true;
+                return;
+            }
+
+            // Buff系
+            {
+                _buffUseCase.Push(BuffType.Skull, Damage);
+            }
 
             // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = this.UpdateAsObservable()
@@ -195,6 +220,10 @@ namespace Soroeru.InGame.Presentation.Controller
                         {
                             _slotItemUseCase.Generate(ItemType.Bomb, direction);
                         }
+                        else if (Input.GetKeyDown(KeyCode.K))
+                        {
+                            _buffUseCase.SetUp(BuffType.Skull);
+                        }
                     }
                 })
                 .AddTo(this);
@@ -230,18 +259,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     
                     if (other.TryGetComponent(out DamageView damageView))
                     {
-                        if (isDamage.Value) return;
-
-                        if (_coinCountUseCase.count > 0)
-                        {
-                            isDamage.Value = true;
-                            var dropCount = Mathf.Min(_coinCountUseCase.count, damageView.power);
-                            _coinCountUseCase.Drop(dropCount);
-                            _coinUseCase.Drop(transform.position, dropCount);
-                            return;
-                        }
-
-                        isDead.Value = true;
+                        Damage(damageView.power);
                         return;
                     }
                 })
@@ -253,18 +271,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     if (other.TryGetComponent(out DamageView damageView))
                     {
-                        if (isDamage.Value) return;
-
-                        if (_coinCountUseCase.count > 0)
-                        {
-                            isDamage.Value = true;
-                            var dropCount = Mathf.Min(_coinCountUseCase.count, damageView.power);
-                            _coinCountUseCase.Drop(dropCount);
-                            _coinUseCase.Drop(transform.position, dropCount);
-                            return;
-                        }
-
-                        isDead.Value = true;
+                        Damage(damageView.power);
                         return;
                     }
                 })

@@ -36,6 +36,7 @@ namespace Soroeru.InGame
                 case PictureType.None:
                 case PictureType.Jump:
                 case PictureType.Bomb:
+                case PictureType.Skull:
                     return EquipType.None;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -53,7 +54,25 @@ namespace Soroeru.InGame
                 case PictureType.None:
                 case PictureType.Gun:
                 case PictureType.Trump:
+                case PictureType.Skull:
                     return ItemType.None;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        public static BuffType ConvertForBuff(this PictureType type)
+        {
+            switch (type)
+            {
+                case PictureType.Skull:
+                    return BuffType.Skull;
+                case PictureType.None:
+                case PictureType.Gun:
+                case PictureType.Trump:
+                case PictureType.Jump:
+                case PictureType.Bomb:
+                    return BuffType.None;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
