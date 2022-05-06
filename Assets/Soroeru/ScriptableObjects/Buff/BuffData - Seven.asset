@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da839d6b00e45539044038c8d1863fb, type: 3}
-  m_Name: PlayerData
+  m_Script: {fileID: 11500000, guid: ce12df3fab5541f08a5f2404ee1212e4, type: 3}
+  m_Name: BuffData - Seven
   m_EditorClassIdentifier: 
-  playerMoveData:
-    moveSpeed: 2
-    powerUpMoveSpeed: 4
-    jumpPower: 5
+  buffType: 2
+  buffValue: 15

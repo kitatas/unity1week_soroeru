@@ -14,6 +14,13 @@ namespace Soroeru.InGame
         Bomb,
     }
 
+    public enum BuffType
+    {
+        None,
+        Skull,
+        Seven,
+    }
+
     public enum Direction
     {
         Left,
@@ -27,5 +34,7 @@ namespace Soroeru.InGame
         Trump = 2,
         Jump = 3,
         Bomb = 4,
+        Skull = 5,
+        Seven = 6,
     }
 }
