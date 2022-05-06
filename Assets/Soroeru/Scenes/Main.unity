@@ -992,6 +992,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca77d83124c847269cf4eec55e319f49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leftFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 1
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 325
+    maxNormalAngle: 395
+  rightFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 1
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 145
+    maxNormalAngle: 215
   armorAttackView: {fileID: 4530509189821255855, guid: 5bd505761b5104b64b388f28f7be0578, type: 3}
 --- !u!61 &956862874
 BoxCollider2D:
