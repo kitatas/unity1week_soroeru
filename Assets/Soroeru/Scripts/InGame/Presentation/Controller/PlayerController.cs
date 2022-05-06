@@ -50,6 +50,7 @@ namespace Soroeru.InGame.Presentation.Controller
         public void Initialize()
         {
             _slotView.Init();
+            _playerView.Init(_moveUseCase.Jump);
 
             // 横入力時の制御
             var horizontal = new ReactiveProperty<float>(0.0f);
@@ -304,11 +305,6 @@ namespace Soroeru.InGame.Presentation.Controller
                     }
                 })
                 .AddTo(_playerView);
-        }
-
-        public void Jump(float jumpPower)
-        {
-            _moveUseCase.Jump(jumpPower);
         }
     }
 }

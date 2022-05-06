@@ -14,6 +14,13 @@ namespace Soroeru.InGame.Presentation.View
 
         public Direction direction { get; private set; } = Direction.Right;
 
+        public Action<float> jumpAction { get; private set; }
+
+        public void Init(Action<float> jump)
+        {
+            jumpAction = jump;
+        }
+
         public void SetLayer(string layerName)
         {
             gameObject.SetLayer(layerName);
