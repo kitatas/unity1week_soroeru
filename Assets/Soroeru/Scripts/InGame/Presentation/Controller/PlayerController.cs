@@ -1,40 +1,36 @@
 using System;
 using EFUK;
-using Soroeru.InGame.Data.Entity;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.View;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using VContainer;
+using VContainer.Unity;
 
 namespace Soroeru.InGame.Presentation.Controller
 {
-    [RequireComponent(typeof(Rigidbody2D))]
-    public sealed class PlayerController : MonoBehaviour
+    public sealed class PlayerController : IInitializable
     {
-        [SerializeField] private ArmorAttackView armorAttackView = default;
+        private readonly BuffUseCase _buffUseCase;
+        private readonly CoinCountUseCase _coinCountUseCase;
+        private readonly CoinUseCase _coinUseCase;
+        private readonly IPlayerInputUseCase _inputUseCase;
+        private readonly PlayerAnimatorUseCase _animatorUseCase;
+        private readonly PlayerAttackUseCase _attackUseCase;
+        private readonly PlayerEquipUseCase _equipUseCase;
+        private readonly PlayerMoveUseCase _moveUseCase;
+        private readonly PlayerRayUseCase _rayUseCase;
+        private readonly PlayerSpriteUseCase _spriteUseCase;
+        private readonly SlotItemUseCase _slotItemUseCase;
+        private readonly PlayerView _playerView;
+        private readonly SlotView _slotView;
 
-        private BuffUseCase _buffUseCase;
-        private CoinCountUseCase _coinCountUseCase;
-        private CoinUseCase _coinUseCase;
-        private IPlayerInputUseCase _inputUseCase;
-        private PlayerAnimatorUseCase _animatorUseCase;
-        private PlayerAttackUseCase _attackUseCase;
-        private PlayerEquipUseCase _equipUseCase;
-        private PlayerMoveUseCase _moveUseCase;
-        private PlayerRayUseCase _rayUseCase;
-        private PlayerSpriteUseCase _spriteUseCase;
-        private SlotItemUseCase _slotItemUseCase;
-        private SlotView _slotView;
-
-        [Inject]
-        private void Construct(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
+        public PlayerController(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase,
-            SlotView slotView)
+            PlayerView playerView, SlotView slotView)
         {
             _buffUseCase = buffUseCase;
             _coinCountUseCase = coinCountUseCase;
@@ -47,10 +43,11 @@ namespace Soroeru.InGame.Presentation.Controller
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
             _slotItemUseCase = slotItemUseCase;
+            _playerView = playerView;
             _slotView = slotView;
         }
 
-        private void Start()
+        public void Initialize()
         {
             _slotView.Init();
 
@@ -62,13 +59,16 @@ namespace Soroeru.InGame.Presentation.Controller
                     _animatorUseCase.SetRun(x);
                     _spriteUseCase.Flip(x);
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
-            var direction = Direction.Right;
             horizontal
                 .Where(x => x.EqualZero() == false)
-                .Subscribe(x => direction = x > 0 ? Direction.Right : Direction.Left)
-                .AddTo(this);
+                .Subscribe(x =>
+                {
+                    var direction = x > 0 ? Direction.Right : Direction.Left;
+                    _playerView.SetDirection(direction);
+                })
+                .AddTo(_playerView);
 
             // ジャンプ制御
             var isJump = new ReactiveProperty<bool>(false);
@@ -76,11 +76,8 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(x => x)
                 .Where(_ => _rayUseCase.IsGround());
             canJump
-                .Subscribe(_ =>
-                {
-                    _moveUseCase.Jump();
-                })
-                .AddTo(this);
+                .Subscribe(_ => { _moveUseCase.Jump(); })
+                .AddTo(_playerView);
 
             // 攻撃制御
             var isAttack = new ReactiveProperty<bool>(false);
@@ -89,9 +86,9 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetAttack();
-                    _attackUseCase.Attack(_equipUseCase.currentEquip, direction);
+                    _attackUseCase.Attack(_equipUseCase.currentEquip, _playerView.direction);
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             // 被ダメージ
             var isKnockBack = false;
@@ -101,19 +98,19 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetDamage();
-                    _moveUseCase.KnockBack(direction);
-                    StartCoroutine(_spriteUseCase.Flash(PlayerConfig.INVINCIBLE_TIME));
-                    gameObject.SetLayer(LayerConfig.DAMAGED);
+                    _moveUseCase.KnockBack(_playerView.direction);
+                    _playerView.StartCoroutine(_spriteUseCase.Flash(PlayerConfig.INVINCIBLE_TIME));
+                    _playerView.SetLayer(LayerConfig.DAMAGED);
 
                     isKnockBack = true;
-                    this.Delay(PlayerConfig.KNOCK_BACK_TIME, () => isKnockBack = false);
-                    this.Delay(PlayerConfig.INVINCIBLE_TIME, () =>
+                    _playerView.Delay(PlayerConfig.KNOCK_BACK_TIME, () => isKnockBack = false);
+                    _playerView.Delay(PlayerConfig.INVINCIBLE_TIME, () =>
                     {
                         isDamage.Value = false;
-                        gameObject.SetLayer(LayerConfig.PLAYER);
+                        _playerView.SetLayer(LayerConfig.PLAYER);
                     });
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             // 全てのリールが停止した時
             var reelStop = new Subject<Unit>();
@@ -124,18 +121,15 @@ namespace Soroeru.InGame.Presentation.Controller
                     var type = _slotView.GetRole();
                     Debug.Log($"role: {type}");
                     _equipUseCase.Equip(type);
-                    _slotItemUseCase.Generate(type, direction);
+                    _slotItemUseCase.Generate(type, _playerView.direction);
                     _buffUseCase.SetUp(type);
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             // 装備更新時
             _equipUseCase.equipType
-                .Subscribe(x =>
-                {
-                    _attackUseCase.EquipWeapon(x);
-                })
-                .AddTo(this);
+                .Subscribe(x => { _attackUseCase.EquipWeapon(x); })
+                .AddTo(_playerView);
 
             // 1つのリールを停止
             canJump
@@ -148,7 +142,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     _slotView.StopReel();
                     reelStop.OnNext(Unit.Default);
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             // ゲームオーバー
             var isDead = new ReactiveProperty<bool>(false);
@@ -157,8 +151,9 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetDead();
+                    Debug.Log($"game is over!!");
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             void Damage(int damageValue)
             {
@@ -169,7 +164,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     isDamage.Value = true;
                     var dropCount = Mathf.Min(_coinCountUseCase.count, damageValue);
                     _coinCountUseCase.Drop(dropCount);
-                    _coinUseCase.Drop(transform.position, dropCount);
+                    _coinUseCase.Drop(_playerView.position, dropCount);
                     return;
                 }
 
@@ -179,6 +174,7 @@ namespace Soroeru.InGame.Presentation.Controller
 
             var powerUpTime = 0.0f;
             Action cancelPowerUp = null;
+
             void PowerUp(int lifeTime)
             {
                 powerUpTime = lifeTime;
@@ -187,18 +183,11 @@ namespace Soroeru.InGame.Presentation.Controller
                     return;
                 }
 
-                gameObject.SetLayer(LayerConfig.DAMAGED);
-                var armor = Instantiate(armorAttackView, transform.position, Quaternion.identity);
-                var attackEntity = new AttackEntity(transform, direction, lifeTime, 999);
-                armor.Fire(attackEntity);
-
                 _moveUseCase.SetPowerUp(true);
-
-                cancelPowerUp = () =>
+                cancelPowerUp = _playerView.PowerUp(lifeTime);
+                cancelPowerUp += () =>
                 {
                     cancelPowerUp = null;
-                    gameObject.SetLayer(LayerConfig.PLAYER);
-                    Destroy(armor.gameObject);
                     _spriteUseCase.SetColor(Color.white);
                     _moveUseCase.SetPowerUp(false);
                 };
@@ -211,23 +200,23 @@ namespace Soroeru.InGame.Presentation.Controller
             }
 
             // TODO: メニュー開いている場合は動かさない
-            var tickAsObservable = this.UpdateAsObservable()
+            var tickAsObservable = _playerView.UpdateAsObservable()
                 .Where(_ => true);
 
-            var fixedTickAsObservable = this.FixedUpdateAsObservable()
+            var fixedTickAsObservable = _playerView.FixedUpdateAsObservable()
                 .Where(_ => true);
 
-            var triggerEnterAsObservable = this.OnTriggerEnter2DAsObservable()
+            var triggerEnterAsObservable = _playerView.OnTriggerEnter2DAsObservable()
                 .Where(_ => true);
 
-            var collisionEnterAsObservable = this.OnCollisionEnter2DAsObservable()
+            var collisionEnterAsObservable = _playerView.OnCollisionEnter2DAsObservable()
                 .Where(_ => true);
 
             tickAsObservable
                 .Subscribe(_ =>
                 {
                     var deltaTime = Time.deltaTime;
-                    _slotView.Tick(transform, deltaTime);
+                    _slotView.Tick(_playerView.transform, deltaTime);
                     _equipUseCase.Tick(deltaTime);
                     _moveUseCase.Tick(deltaTime, _inputUseCase.isJumping);
 
@@ -242,8 +231,8 @@ namespace Soroeru.InGame.Presentation.Controller
                         }
                     }
 
-                    _animatorUseCase.SetGround(_rayUseCase.IsGround());
                     _animatorUseCase.SetFall(_moveUseCase.gravity);
+                    _animatorUseCase.SetGround(_rayUseCase.IsGround());
 
                     // TODO: Debugのため、あとで消す
                     {
@@ -257,11 +246,11 @@ namespace Soroeru.InGame.Presentation.Controller
                         }
                         else if (Input.GetKeyDown(KeyCode.J))
                         {
-                            _slotItemUseCase.Generate(ItemType.Jump, direction);
+                            _slotItemUseCase.Generate(ItemType.Jump, _playerView.direction);
                         }
                         else if (Input.GetKeyDown(KeyCode.B))
                         {
-                            _slotItemUseCase.Generate(ItemType.Bomb, direction);
+                            _slotItemUseCase.Generate(ItemType.Bomb, _playerView.direction);
                         }
                         else if (Input.GetKeyDown(KeyCode.K))
                         {
@@ -273,7 +262,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         }
                     }
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             tickAsObservable
                 .Where(_ => isKnockBack == false)
@@ -284,16 +273,13 @@ namespace Soroeru.InGame.Presentation.Controller
                     isJump.Value = _inputUseCase.isJump;
                     isAttack.Value = _inputUseCase.isAttack;
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             fixedTickAsObservable
                 .Where(_ => isKnockBack == false)
                 .Where(_ => isDead.Value == false)
-                .Subscribe(_ =>
-                {
-                    _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
-                })
-                .AddTo(this);
+                .Subscribe(_ => { _moveUseCase.SetVelocityX(_inputUseCase.horizontal); })
+                .AddTo(_playerView);
 
             triggerEnterAsObservable
                 .Subscribe(other =>
@@ -303,17 +289,12 @@ namespace Soroeru.InGame.Presentation.Controller
                         coinView.PickUp(_coinCountUseCase.Increase);
                         return;
                     }
-
-                    if (other.TryGetComponent(out DamageView damageView))
-                    {
-                        Damage(damageView.power);
-                        return;
-                    }
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
 
             collisionEnterAsObservable
                 .Select(other => other.collider)
+                .Merge(triggerEnterAsObservable)
                 .Subscribe(other =>
                 {
                     if (other.TryGetComponent(out DamageView damageView))
@@ -322,7 +303,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         return;
                     }
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
         }
 
         public void Jump(float jumpPower)
