@@ -1,4 +1,3 @@
-using System.Collections;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -9,32 +8,11 @@ namespace Soroeru.InGame.Presentation.View
     {
         [SerializeField] private int hitPoint = default;
 
-        [SerializeField] private EnemyAmmoView enemyAmmoView = default;
-        [SerializeField] private float shotInterval = default;
-
-        protected Vector3 initPosition;
-
-        private void Start()
+        protected virtual void Start()
         {
-            StartCoroutine(Shot());
-
-            initPosition = transform.position;
-
             this.UpdateAsObservable()
                 .Subscribe(_ => Tick())
                 .AddTo(this);
-        }
-
-        private IEnumerator Shot()
-        {
-            var interval = new WaitForSeconds(shotInterval);
-            while (true)
-            {
-                yield return interval;
-
-                var ammo = Instantiate(enemyAmmoView, transform.position, Quaternion.identity);
-                ammo.Fire();
-            }
         }
 
         protected virtual void Tick()
