@@ -1,5 +1,4 @@
 using DG.Tweening;
-using Soroeru.InGame.Presentation.Controller;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -17,12 +16,12 @@ namespace Soroeru.InGame.Presentation.View
             this.OnCollisionEnter2DAsObservable()
                 .Subscribe(other =>
                 {
-                    if (other.collider.TryGetComponent(out PlayerController player))
+                    if (other.collider.TryGetComponent(out PlayerView player))
                     {
                         // 上部判定
                         if (rigidbody2d.IsTouching(filter2d))
                         {
-                            player.Jump(jumpPower);
+                            player.jumpAction?.Invoke(jumpPower);
                             PlayAnimation();
                         }
                     }
