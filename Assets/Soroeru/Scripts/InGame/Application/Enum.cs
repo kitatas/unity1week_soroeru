@@ -37,4 +37,14 @@ namespace Soroeru.InGame
         Skull = 5,
         Seven = 6,
     }
+
+    public enum EnemyType
+    {
+        None,
+        UniNormal,
+        UniHorizontal,
+        UniVertical,
+        UniRound,
+        Pig,
+    }
 }
