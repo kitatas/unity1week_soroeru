@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed117564b38452ba25f56dd4a67fab0, type: 3}
+  m_Name: EnemyData - Pig
+  m_EditorClassIdentifier: 
+  enemyType: 5
+  enemyView: {fileID: -8752302072960503721, guid: e07ac52ae1c2f434db9bea7c3eedc48e, type: 3}
