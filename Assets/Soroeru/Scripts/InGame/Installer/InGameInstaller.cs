@@ -3,6 +3,7 @@ using Soroeru.InGame.Data.Entity;
 using Soroeru.InGame.Domain.Factory;
 using Soroeru.InGame.Domain.Repository;
 using Soroeru.InGame.Domain.UseCase;
+using Soroeru.InGame.Presentation.Controller;
 using Soroeru.InGame.Presentation.Presenter;
 using Soroeru.InGame.Presentation.View;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Soroeru.InGame.Installer
 
         [SerializeField] private CoinCountView coinCountView = default;
         [SerializeField] private PlayerEquipView playerEquipView = default;
+        [SerializeField] private PlayerView playerView = default;
         [SerializeField] private SlotView slotView = default;
 
         // Player's Component
@@ -67,6 +69,9 @@ namespace Soroeru.InGame.Installer
             builder.Register<PlayerSpriteUseCase>(Lifetime.Scoped).WithParameter(spriteRenderer);
             builder.Register<SlotItemUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
 
+            // Controller
+            builder.RegisterEntryPoint<PlayerController>(Lifetime.Scoped);
+
             // Presenter
             builder.RegisterEntryPoint<CoinCountPresenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<PlayerEquipPresenter>(Lifetime.Scoped);
@@ -74,6 +79,7 @@ namespace Soroeru.InGame.Installer
             // View
             builder.RegisterInstance<CoinCountView>(coinCountView);
             builder.RegisterInstance<PlayerEquipView>(playerEquipView);
+            builder.RegisterInstance<PlayerView>(playerView);
             builder.RegisterInstance<SlotView>(slotView);
         }
     }
