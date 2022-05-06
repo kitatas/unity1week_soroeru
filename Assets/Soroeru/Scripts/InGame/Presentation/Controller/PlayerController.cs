@@ -218,6 +218,9 @@ namespace Soroeru.InGame.Presentation.Controller
             
             var collisionStayAsObservable = _playerView.OnCollisionStay2DAsObservable()
                 .Where(_ => true);
+            
+            var collisionExitAsObservable = _playerView.OnCollisionExit2DAsObservable()
+                .Where(_ => true);
 
             tickAsObservable
                 .Subscribe(_ =>
@@ -327,6 +330,16 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     isStickingLeft = _moveUseCase.HitWall(_playerView.left);
                     isStickingRight = _moveUseCase.HitWall(_playerView.right);
+                })
+                .AddTo(_playerView);
+
+            collisionExitAsObservable
+                .Select(other => other.collider)
+                .Where(other => other.gameObject.layer == LayerMask.NameToLayer(LayerConfig.GROUND))
+                .Subscribe(other =>
+                {
+                    isStickingLeft = false;
+                    isStickingRight = false;
                 })
                 .AddTo(_playerView);
         }

@@ -1004,8 +1004,8 @@ MonoBehaviour:
       m_Bits: 0
     minDepth: 0
     maxDepth: 0
-    minNormalAngle: 325
-    maxNormalAngle: 395
+    minNormalAngle: 345
+    maxNormalAngle: 375
   rightFilter:
     useTriggers: 0
     useLayerMask: 0
@@ -1018,8 +1018,8 @@ MonoBehaviour:
       m_Bits: 0
     minDepth: 0
     maxDepth: 0
-    minNormalAngle: 145
-    maxNormalAngle: 215
+    minNormalAngle: 165
+    maxNormalAngle: 195
   armorAttackView: {fileID: 4530509189821255855, guid: 5bd505761b5104b64b388f28f7be0578, type: 3}
 --- !u!61 &956862874
 BoxCollider2D:
