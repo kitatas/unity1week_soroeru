@@ -200,6 +200,9 @@ namespace Soroeru.InGame.Presentation.Controller
                 _buffUseCase.Push(BuffType.Seven, PowerUp);
             }
 
+            var isStickingLeft = false;
+            var isStickingRight = false;
+
             // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = _playerView.UpdateAsObservable()
                 .Where(_ => true);
@@ -211,6 +214,9 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(_ => true);
 
             var collisionEnterAsObservable = _playerView.OnCollisionEnter2DAsObservable()
+                .Where(_ => true);
+            
+            var collisionStayAsObservable = _playerView.OnCollisionStay2DAsObservable()
                 .Where(_ => true);
 
             tickAsObservable
@@ -279,7 +285,15 @@ namespace Soroeru.InGame.Presentation.Controller
             fixedTickAsObservable
                 .Where(_ => isKnockBack == false)
                 .Where(_ => isDead.Value == false)
-                .Subscribe(_ => { _moveUseCase.SetVelocityX(_inputUseCase.horizontal); })
+                .Subscribe(_ =>
+                {
+                    if (_inputUseCase.horizontal < 0 && isStickingLeft ||
+                        _inputUseCase.horizontal > 0 && isStickingRight)
+                    {
+                        return;
+                    }
+                    _moveUseCase.SetVelocityX(_inputUseCase.horizontal);
+                })
                 .AddTo(_playerView);
 
             triggerEnterAsObservable
@@ -303,6 +317,16 @@ namespace Soroeru.InGame.Presentation.Controller
                         Damage(damageView.power);
                         return;
                     }
+                })
+                .AddTo(_playerView);
+
+            collisionStayAsObservable
+                .Select(other => other.collider)
+                .Where(other => other.gameObject.layer == LayerMask.NameToLayer(LayerConfig.GROUND))
+                .Subscribe(other =>
+                {
+                    isStickingLeft = _moveUseCase.HitWall(_playerView.left);
+                    isStickingRight = _moveUseCase.HitWall(_playerView.right);
                 })
                 .AddTo(_playerView);
         }

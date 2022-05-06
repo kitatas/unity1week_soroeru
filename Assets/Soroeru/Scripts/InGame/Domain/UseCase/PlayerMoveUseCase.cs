@@ -61,5 +61,10 @@ namespace Soroeru.InGame.Domain.UseCase
                 Vector2.up * PlayerConfig.KNOCK_UP_POWER;
             _rigidbody2d.AddForce(knockVector);
         }
+
+        public bool HitWall(ContactFilter2D filter)
+        {
+            return _rigidbody2d.IsTouching(filter);
+        }
     }
 }
