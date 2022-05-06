@@ -21,6 +21,7 @@ namespace Soroeru.InGame.Installer
         [SerializeField] private PlayerData playerData = default;
         [SerializeField] private SlotItemTable slotItemTable = default;
 
+        [SerializeField] private CameraView cameraView = default;
         [SerializeField] private CoinCountView coinCountView = default;
         [SerializeField] private PlayerEquipView playerEquipView = default;
         [SerializeField] private PlayerView playerView = default;
@@ -70,6 +71,7 @@ namespace Soroeru.InGame.Installer
             builder.Register<SlotItemUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
 
             // Controller
+            builder.RegisterEntryPoint<CameraController>(Lifetime.Scoped);
             builder.RegisterEntryPoint<PlayerController>(Lifetime.Scoped);
 
             // Presenter
@@ -77,6 +79,7 @@ namespace Soroeru.InGame.Installer
             builder.RegisterEntryPoint<PlayerEquipPresenter>(Lifetime.Scoped);
 
             // View
+            builder.RegisterInstance<CameraView>(cameraView);
             builder.RegisterInstance<CoinCountView>(coinCountView);
             builder.RegisterInstance<PlayerEquipView>(playerEquipView);
             builder.RegisterInstance<PlayerView>(playerView);
