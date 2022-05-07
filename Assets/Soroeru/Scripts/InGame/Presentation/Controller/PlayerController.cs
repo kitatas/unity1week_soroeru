@@ -1,5 +1,7 @@
 using System;
 using EFUK;
+using Soroeru.Common;
+using Soroeru.Common.Presentation.Controller;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.View;
 using UniRx;
@@ -24,13 +26,14 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly SlotItemUseCase _slotItemUseCase;
         private readonly PlayerView _playerView;
         private readonly SlotView _slotView;
+        private readonly SeController _seController;
 
         public PlayerController(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase,
-            PlayerView playerView, SlotView slotView)
+            PlayerView playerView, SlotView slotView, SeController seController)
         {
             _buffUseCase = buffUseCase;
             _coinCountUseCase = coinCountUseCase;
@@ -45,10 +48,12 @@ namespace Soroeru.InGame.Presentation.Controller
             _slotItemUseCase = slotItemUseCase;
             _playerView = playerView;
             _slotView = slotView;
+            _seController = seController;
         }
 
         public void Initialize()
         {
+            _seController.PlayLoop(SeType.ReelRoll, true);
             _slotView.Init();
             _playerView.Init(_moveUseCase.Jump);
 
@@ -86,6 +91,10 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(x => x)
                 .Subscribe(_ =>
                 {
+                    if (_equipUseCase.currentEquip == EquipType.Gun)
+                    {
+                        _seController.Play(SeType.Gun);
+                    }
                     _animatorUseCase.SetAttack();
                     _attackUseCase.Attack(_equipUseCase.currentEquip, _playerView.direction);
                 })
@@ -119,11 +128,27 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(_ => _slotView.IsReelStopAll())
                 .Subscribe(_ =>
                 {
+                    _playerView.Delay(SlotConfig.REEL_ROTATE_INTERVAL, () => _seController.PlayLoop(SeType.ReelRoll));
+                    _seController.Stop(SeType.ReelRoll);
+                    _seController.Play(SeType.ReelStop);
+
                     var type = _slotView.GetRole();
-                    Debug.Log($"role: {type}");
-                    _equipUseCase.Equip(type);
-                    _slotItemUseCase.Generate(type, _playerView.direction);
-                    _buffUseCase.SetUp(type);
+
+                    var isEquip = _equipUseCase.Equip(type);
+                    var isGenerate = _slotItemUseCase.Generate(type, _playerView.direction);
+                    var buffType = _buffUseCase.SetUp(type);
+                    if (isEquip || isGenerate)
+                    {
+                        _seController.Play(SeType.HitRoleNormal);
+                    }
+                    else if (buffType == BuffType.Seven)
+                    {
+                        _seController.Play(SeType.HitRoleSeven);
+                    }
+                    else if (buffType == BuffType.Skull)
+                    {
+                        _seController.Play(SeType.HitRoleSkull);
+                    }
                 })
                 .AddTo(_playerView);
 
@@ -140,6 +165,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Where(_ => _slotView.IsReelStopAll() == false)
                 .Subscribe(_ =>
                 {
+                    _seController.Play(SeType.ReelStop);
                     _slotView.StopReel();
                     reelStop.OnNext(Unit.Default);
                 })
@@ -184,6 +210,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     return;
                 }
 
+                _seController.PlayLoop(SeType.SevenFever, true);
                 _moveUseCase.SetPowerUp(true);
                 cancelPowerUp = _playerView.PowerUp(lifeTime);
                 cancelPowerUp += () =>
@@ -191,6 +218,14 @@ namespace Soroeru.InGame.Presentation.Controller
                     cancelPowerUp = null;
                     _spriteUseCase.SetColor(Color.white);
                     _moveUseCase.SetPowerUp(false);
+                    if (_slotView.IsReelStopAll())
+                    {
+                        _seController.Stop(SeType.SevenFever);
+                    }
+                    else
+                    {
+                        _seController.PlayLoop(SeType.ReelRoll, true);
+                    }
                 };
             }
 
@@ -304,6 +339,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     if (other.TryGetComponent(out CoinView coinView))
                     {
+                        _seController.Play(SeType.CoinGet);
                         coinView.PickUp(_coinCountUseCase.Increase);
                         return;
                     }

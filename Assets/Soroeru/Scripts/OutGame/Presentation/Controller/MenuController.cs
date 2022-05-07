@@ -1,6 +1,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using EFUK;
+using Soroeru.Common;
+using Soroeru.Common.Presentation.Controller;
 using Soroeru.OutGame.Domain.UseCase;
 using Soroeru.OutGame.Presentation.View;
 using UniRx;
@@ -19,11 +21,13 @@ namespace Soroeru.OutGame.Presentation.Controller
         private int index => _index.Value;
         
         private IInputUseCase _inputUseCase;
+        private SeController _seController;
 
         [Inject]
-        private void Construct(IInputUseCase inputUseCase)
+        private void Construct(IInputUseCase inputUseCase, SeController seController)
         {
             _inputUseCase = inputUseCase;
+            _seController = seController;
         }
 
         public override async UniTask InitAsync(CancellationToken token)
@@ -45,17 +49,19 @@ namespace Soroeru.OutGame.Presentation.Controller
             {
                 if (_inputUseCase.isDecision)
                 {
+                    _seController.Play(SeType.Decision);
                     return items[index].type.ConvertScreenType();
                 }
 
                 var vertical = _inputUseCase.verticalDown;
                 if (vertical > 0)
                 {
+                    _seController.Play(SeType.MoveCursor);
                     _index.Value = MathfExtension.RepeatDecrement(index, 0, items.GetLastIndex());
-
                 }
                 else if (vertical < 0)
                 {
+                    _seController.Play(SeType.MoveCursor);
                     _index.Value = MathfExtension.RepeatIncrement(index, 0, items.GetLastIndex());
                 }
 

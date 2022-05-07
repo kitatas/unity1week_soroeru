@@ -6,6 +6,21 @@ namespace Soroeru.Common
 
     public enum SeType
     {
+        CoinGet,
+        ReelRoll,
+        ReelStop,
+        HitRoleNormal,
+        HitRoleSeven,
+        HitRoleSkull,
+        Gun,
+        HitEnemy,
+        CoinDrop,
+        SevenFever,
+        Explode,
+        Jump,
+        Pause,
+        Decision,
+        MoveCursor,
     }
 
     public enum SceneName

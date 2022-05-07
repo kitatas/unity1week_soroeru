@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Soroeru.Common;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -10,8 +11,10 @@ namespace Soroeru.InGame.Presentation.View
         [SerializeField] private float jumpPower = default;
         [SerializeField] private ContactFilter2D filter2d = default;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+
             var rigidbody2d = GetComponent<Rigidbody2D>();
             this.OnCollisionEnter2DAsObservable()
                 .Subscribe(other =>
@@ -21,6 +24,7 @@ namespace Soroeru.InGame.Presentation.View
                         // 上部判定
                         if (rigidbody2d.IsTouching(filter2d))
                         {
+                            seController.Play(SeType.Jump);
                             player.jumpAction?.Invoke(jumpPower);
                             PlayAnimation();
                         }

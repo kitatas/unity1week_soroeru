@@ -1,6 +1,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using EFUK;
+using Soroeru.Common;
+using Soroeru.Common.Presentation.Controller;
 using Soroeru.OutGame.Domain.UseCase;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,11 +17,13 @@ namespace Soroeru.OutGame.Presentation.Controller
         public override ScreenType type => ScreenType.Credit;
 
         private IInputUseCase _inputUseCase;
+        private SeController _seController;
 
         [Inject]
-        private void Construct(IInputUseCase inputUseCase)
+        private void Construct(IInputUseCase inputUseCase, SeController seController)
         {
             _inputUseCase = inputUseCase;
+            _seController = seController;
         }
 
         public override async UniTask InitAsync(CancellationToken token)
@@ -33,6 +37,7 @@ namespace Soroeru.OutGame.Presentation.Controller
             {
                 if (_inputUseCase.isBack)
                 {
+                    _seController.Play(SeType.Decision);
                     this.Delay(UiConfig.POP_UP_ANIMATION_TIME, () => scrollRect.verticalNormalizedPosition = 1.0f);
                     return ScreenType.Menu;
                 }

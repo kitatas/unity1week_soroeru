@@ -20,7 +20,7 @@ namespace Soroeru.InGame.Domain.UseCase
             _buffMap.Add(type, action);
         }
 
-        public void SetUp(BuffType type)
+        public BuffType SetUp(BuffType type)
         {
             var data = _buffRepository.FindBuffData(type);
             if (data == null)
@@ -31,6 +31,7 @@ namespace Soroeru.InGame.Domain.UseCase
             if (_buffMap.TryGetValue(type, out var action))
             {
                 action?.Invoke(data.value);
+                return data.type;
             }
             else
             {
@@ -38,15 +39,15 @@ namespace Soroeru.InGame.Domain.UseCase
             }
         }
 
-        public void SetUp(PictureType type)
+        public BuffType SetUp(PictureType type)
         {
             var buffType = type.ConvertForBuff();
             if (buffType == BuffType.None)
             {
-                return;
+                return BuffType.None;
             }
 
-            SetUp(buffType);
+            return SetUp(buffType);
         }
     }
 }

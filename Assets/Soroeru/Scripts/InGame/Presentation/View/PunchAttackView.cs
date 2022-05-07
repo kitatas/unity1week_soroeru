@@ -1,4 +1,7 @@
+using Soroeru.Common;
 using Soroeru.InGame.Data.Entity;
+using UniRx;
+using UniRx.Triggers;
 
 namespace Soroeru.InGame.Presentation.View
 {
@@ -6,9 +9,20 @@ namespace Soroeru.InGame.Presentation.View
     {
         public override void Fire(AttackEntity attackEntity)
         {
-            base.Fire(attackEntity);
+            Destroy(gameObject, attackEntity.lifeTime);
 
-            transform.SetParent(attackEntity.owner);
+            this.OnTriggerEnter2DAsObservable()
+                .Subscribe(other =>
+                {
+                    if (other.gameObject.TryGetComponent(out EnemyView enemyView))
+                    {
+                        seController.Play(SeType.HitEnemy);
+                        enemyView.ApplyDamage(attackEntity.attackPower);
+                    }
+
+                    Destroy(gameObject);
+                })
+                .AddTo(this);
         }
     }
 }

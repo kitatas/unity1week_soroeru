@@ -1,6 +1,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Soroeru.Common;
+using Soroeru.Common.Presentation.Controller;
 using Soroeru.OutGame.Domain.UseCase;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,11 +17,15 @@ namespace Soroeru.OutGame.Presentation.Controller
         public override ScreenType type => ScreenType.Top;
 
         private IInputUseCase _inputUseCase;
+        private BgmController _bgmController;
+        private SeController _seController;
 
         [Inject]
-        private void Construct(IInputUseCase inputUseCase)
+        private void Construct(IInputUseCase inputUseCase, BgmController bgmController, SeController seController)
         {
             _inputUseCase = inputUseCase;
+            _bgmController = bgmController;
+            _seController = seController;
         }
 
         public override async UniTask InitAsync(CancellationToken token)
@@ -29,6 +35,8 @@ namespace Soroeru.OutGame.Presentation.Controller
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetLink(press.gameObject);
+            
+            // TODO: play bgm
 
             await UniTask.Yield(token);
         }
@@ -39,6 +47,7 @@ namespace Soroeru.OutGame.Presentation.Controller
             {
                 if (_inputUseCase.isAnyKey)
                 {
+                    _seController.Play(SeType.Decision);
                     return ScreenType.Menu;
                 }
 
