@@ -26,6 +26,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly SlotItemUseCase _slotItemUseCase;
         private readonly PlayerView _playerView;
         private readonly SlotView _slotView;
+        private readonly BgmController _bgmController;
         private readonly SeController _seController;
 
         public PlayerController(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
@@ -33,7 +34,7 @@ namespace Soroeru.InGame.Presentation.Controller
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase,
-            PlayerView playerView, SlotView slotView, SeController seController)
+            PlayerView playerView, SlotView slotView, BgmController bgmController, SeController seController)
         {
             _buffUseCase = buffUseCase;
             _coinCountUseCase = coinCountUseCase;
@@ -48,11 +49,13 @@ namespace Soroeru.InGame.Presentation.Controller
             _slotItemUseCase = slotItemUseCase;
             _playerView = playerView;
             _slotView = slotView;
+            _bgmController = bgmController;
             _seController = seController;
         }
 
         public void Initialize()
         {
+            _bgmController.Play(BgmType.Main);
             _seController.PlayLoop(SeType.ReelRoll, true);
             _slotView.Init();
             _playerView.Init(_moveUseCase.Jump);
@@ -341,6 +344,12 @@ namespace Soroeru.InGame.Presentation.Controller
                     {
                         _seController.Play(SeType.CoinGet);
                         coinView.PickUp(_coinCountUseCase.Increase);
+                        return;
+                    }
+
+                    if (other.TryGetComponent(out GoalView goalView))
+                    {
+                        _bgmController.Play(BgmType.Clear);
                         return;
                     }
                 })

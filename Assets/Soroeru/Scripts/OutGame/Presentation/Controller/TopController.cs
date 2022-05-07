@@ -17,15 +17,15 @@ namespace Soroeru.OutGame.Presentation.Controller
         public override ScreenType type => ScreenType.Top;
 
         private IInputUseCase _inputUseCase;
-        private BgmController _bgmController;
         private SeController _seController;
 
         [Inject]
         private void Construct(IInputUseCase inputUseCase, BgmController bgmController, SeController seController)
         {
             _inputUseCase = inputUseCase;
-            _bgmController = bgmController;
             _seController = seController;
+
+            bgmController.Play(BgmType.Top);
         }
 
         public override async UniTask InitAsync(CancellationToken token)
@@ -35,8 +35,6 @@ namespace Soroeru.OutGame.Presentation.Controller
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetLink(press.gameObject);
-            
-            // TODO: play bgm
 
             await UniTask.Yield(token);
         }
