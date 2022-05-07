@@ -10,6 +10,9 @@ namespace Soroeru.Common
 
     public enum SceneName
     {
-        Main,
+        Top,
+        Main1,
+        Main2,
+        Main3,
     }
 }
