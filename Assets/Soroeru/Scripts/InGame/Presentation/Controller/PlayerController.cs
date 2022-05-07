@@ -353,6 +353,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 {
                     if (other.TryGetComponent(out DamageView damageView))
                     {
+                        _seController.Play(SeType.CoinDrop);
                         Damage(damageView.power);
                         return;
                     }
