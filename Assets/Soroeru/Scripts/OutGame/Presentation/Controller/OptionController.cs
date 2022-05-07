@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using EFUK;
+using Soroeru.Common;
 using Soroeru.Common.Presentation.Controller;
 using Soroeru.OutGame.Domain.UseCase;
 using Soroeru.OutGame.Presentation.View;
@@ -51,6 +52,7 @@ namespace Soroeru.OutGame.Presentation.Controller
             {
                 if (_inputUseCase.isBack)
                 {
+                    _seController.Play(SeType.Decision);
                     this.Delay(UiConfig.POP_UP_ANIMATION_TIME, () => _index.Value = 0);
                     return ScreenType.Menu;
                 }
@@ -58,10 +60,12 @@ namespace Soroeru.OutGame.Presentation.Controller
                 var vertical = _inputUseCase.verticalDown;
                 if (vertical > 0)
                 {
+                    _seController.Play(SeType.MoveCursor);
                     _index.Value = MathfExtension.RepeatDecrement(index, 0, items.GetLastIndex());
                 }
                 else if (vertical < 0)
                 {
+                    _seController.Play(SeType.MoveCursor);
                     _index.Value = MathfExtension.RepeatIncrement(index, 0, items.GetLastIndex());
                 }
 
@@ -69,9 +73,14 @@ namespace Soroeru.OutGame.Presentation.Controller
                 var horizontal = _inputUseCase.horizontalDown;
                 if (horizontal != 0 && volume != null)
                 {
-                    var value = Mathf.Clamp01(volume.volume + (horizontal * 0.1f));
-                    volume.SetVolume(value);
-                    items[index].SetEffectValue(volume.volume);
+                    var before = volume.volume;
+                    var value = Mathf.Clamp01(before + (horizontal * 0.1f));
+                    if (value.Equal(before) == false)
+                    {
+                        _seController.Play(SeType.MoveCursor);
+                        volume.SetVolume(value);
+                        items[index].SetEffectValue(volume.volume);
+                    }
                 }
 
                 await UniTask.Yield(token);

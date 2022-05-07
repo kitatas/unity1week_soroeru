@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using EFUK;
+using Soroeru.Common;
 using Soroeru.Common.Presentation.Controller;
 using Soroeru.OutGame.Domain.UseCase;
 using Soroeru.OutGame.Presentation.View;
@@ -20,12 +21,14 @@ namespace Soroeru.OutGame.Presentation.Controller
         private int index => _index.Value;
 
         private IInputUseCase _inputUseCase;
+        private SeController _seController;
         private SceneLoader _sceneLoader;
 
         [Inject]
-        private void Construct(IInputUseCase inputUseCase, SceneLoader sceneLoader)
+        private void Construct(IInputUseCase inputUseCase, SeController seController, SceneLoader sceneLoader)
         {
             _inputUseCase = inputUseCase;
+            _seController = seController;
             _sceneLoader = sceneLoader;
         }
         
@@ -48,12 +51,14 @@ namespace Soroeru.OutGame.Presentation.Controller
             {
                 if (_inputUseCase.isBack)
                 {
+                    _seController.Play(SeType.Decision);
                     this.Delay(UiConfig.POP_UP_ANIMATION_TIME, () => _index.Value = 0);
                     return ScreenType.Menu;
                 }
 
                 if (_inputUseCase.isDecision)
                 {
+                    _seController.Play(SeType.Decision);
                     _sceneLoader.LoadFade(items[index].scene);
                     return ScreenType.None;
                 }
@@ -61,10 +66,12 @@ namespace Soroeru.OutGame.Presentation.Controller
                 var vertical = _inputUseCase.verticalDown;
                 if (vertical > 0)
                 {
+                    _seController.Play(SeType.MoveCursor);   
                     _index.Value = MathfExtension.RepeatDecrement(index, 0, items.GetLastIndex());
                 }
                 else if (vertical < 0)
                 {
+                    _seController.Play(SeType.MoveCursor);
                     _index.Value = MathfExtension.RepeatIncrement(index, 0, items.GetLastIndex());
                 }
 
