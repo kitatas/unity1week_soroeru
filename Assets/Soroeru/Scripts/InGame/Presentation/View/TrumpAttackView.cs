@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Soroeru.InGame.Data.Entity;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -10,7 +12,12 @@ namespace Soroeru.InGame.Presentation.View
 
         public override void Equip(AttackEntity attackEntity)
         {
-            transform.SetParent(attackEntity.owner);
+            this.UpdateAsObservable()
+                .Subscribe(_ =>
+                {
+                    transform.position = attackEntity.owner.position;
+                })
+                .AddTo(this);
 
             foreach (var cardAttackView in cardAttackViews)
             {

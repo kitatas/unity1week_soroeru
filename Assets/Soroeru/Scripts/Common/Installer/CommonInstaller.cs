@@ -3,6 +3,7 @@ using Soroeru.Common.Data.DataStore;
 using Soroeru.Common.Domain.Repository;
 using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
+using Soroeru.Common.Presentation.View;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -34,6 +35,7 @@ namespace Soroeru.Common
             var se = FindObjectOfType<SeController>();
             builder.RegisterInstance<BgmController>(bgm);
             builder.RegisterInstance<SeController>(se);
+            builder.RegisterInstance<TransitionMaskView>(FindObjectOfType<TransitionMaskView>());
 
             autoInjectGameObjects = new List<GameObject>
             {
