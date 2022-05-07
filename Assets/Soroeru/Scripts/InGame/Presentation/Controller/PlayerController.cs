@@ -26,6 +26,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly SlotItemUseCase _slotItemUseCase;
         private readonly PlayerView _playerView;
         private readonly SlotView _slotView;
+        private readonly TweetUseCase _tweetUseCase;
         private readonly BgmController _bgmController;
         private readonly SeController _seController;
         private readonly SceneLoader _sceneLoader;
@@ -34,7 +35,7 @@ namespace Soroeru.InGame.Presentation.Controller
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
-            SlotItemUseCase slotItemUseCase,
+            SlotItemUseCase slotItemUseCase, TweetUseCase tweetUseCase,
             PlayerView playerView, SlotView slotView,
             BgmController bgmController, SeController seController, SceneLoader sceneLoader)
         {
@@ -49,6 +50,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _rayUseCase = rayUseCase;
             _spriteUseCase = spriteUseCase;
             _slotItemUseCase = slotItemUseCase;
+            _tweetUseCase = tweetUseCase;
             _playerView = playerView;
             _slotView = slotView;
             _bgmController = bgmController;
@@ -357,6 +359,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         isGoal.Value = true;
                         _bgmController.Play(BgmType.Clear);
                         _animatorUseCase.SetClear();
+                        _tweetUseCase.Tweet(_coinCountUseCase.count);
 
                         _playerView.Delay(3.0f, () =>
                         {

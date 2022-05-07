@@ -75,6 +75,7 @@ namespace Soroeru.InGame.Installer
             builder.Register<PlayerRayUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerSpriteUseCase>(Lifetime.Scoped).WithParameter(spriteRenderer);
             builder.Register<SlotItemUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
+            builder.Register<TweetUseCase>(Lifetime.Scoped);
 
             // Controller
             builder.RegisterEntryPoint<CameraController>(Lifetime.Scoped);
