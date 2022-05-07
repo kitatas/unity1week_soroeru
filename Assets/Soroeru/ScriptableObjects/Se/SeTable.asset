@@ -12,4 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f08185b75b834bf0bb73878bb2d3d03f, type: 3}
   m_Name: SeTable
   m_EditorClassIdentifier: 
-  dataList: []
+  dataList:
+  - {fileID: 11400000, guid: b4bee5bce723b4bab9d088ec18f2e7b0, type: 2}
+  - {fileID: 11400000, guid: 865584659009d48acb42e15acbe6a218, type: 2}
+  - {fileID: 11400000, guid: d1386c99378294f4cbc8c327eb122073, type: 2}
+  - {fileID: 11400000, guid: f3c293594fafd4543b5f0955fd6600a0, type: 2}
+  - {fileID: 11400000, guid: e0590e4ad5b5043bdb938878950aeefe, type: 2}
+  - {fileID: 11400000, guid: 9e4bc482feeda4cd6a5440d3f2ed7f84, type: 2}
+  - {fileID: 11400000, guid: 640aa15915beb492f896aab9308bfcd4, type: 2}
+  - {fileID: 11400000, guid: 8c6a4681e5f464904b010df8c666327e, type: 2}
+  - {fileID: 11400000, guid: 189cde6efe19748498a62b5638b4248e, type: 2}
+  - {fileID: 11400000, guid: 34b48d30ee4324fb7a3b1fa50c2a3e55, type: 2}
+  - {fileID: 11400000, guid: 714e5cb5eacf040149ff965a2159eeed, type: 2}
+  - {fileID: 11400000, guid: 91f2fb734f0134f138c8d8c29772132b, type: 2}
+  - {fileID: 11400000, guid: a83af814aa31e4894a7c93ae86a42833, type: 2}
+  - {fileID: 11400000, guid: 9d717c13d18f647e9a41502fb7152aea, type: 2}
+  - {fileID: 11400000, guid: 2f68bae42514d4e6a8f0f5167dad13fc, type: 2}
