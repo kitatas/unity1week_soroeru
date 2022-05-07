@@ -24,6 +24,7 @@ namespace Soroeru.InGame.Installer
 
         [SerializeField] private CameraView cameraView = default;
         [SerializeField] private CoinCountView coinCountView = default;
+        [SerializeField] private GoalView goalView = default;
         [SerializeField] private PlayerEquipView playerEquipView = default;
         [SerializeField] private PlayerView playerView = default;
         [SerializeField] private SlotView slotView = default;
@@ -86,6 +87,7 @@ namespace Soroeru.InGame.Installer
             // View
             builder.RegisterInstance<CameraView>(cameraView);
             builder.RegisterInstance<CoinCountView>(coinCountView);
+            builder.RegisterInstance<GoalView>(goalView);
             builder.RegisterInstance<PlayerEquipView>(playerEquipView);
             builder.RegisterInstance<PlayerView>(playerView);
             builder.RegisterInstance<SlotView>(slotView);

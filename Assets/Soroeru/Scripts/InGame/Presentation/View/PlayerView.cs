@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
 using EFUK;
 using Soroeru.InGame.Data.Entity;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -48,6 +51,13 @@ namespace Soroeru.InGame.Presentation.View
                 SetLayer(LayerConfig.PLAYER);
                 Destroy(armor.gameObject);
             };
+        }
+
+        public void Tick(Action action)
+        {
+            this.FixedUpdateAsObservable()
+                .Subscribe(_ => action?.Invoke())
+                .AddTo(this);
         }
     }
 }

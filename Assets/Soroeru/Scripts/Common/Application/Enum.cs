@@ -2,6 +2,9 @@ namespace Soroeru.Common
 {
     public enum BgmType
     {
+        Top,
+        Main,
+        Clear,
     }
 
     public enum SeType

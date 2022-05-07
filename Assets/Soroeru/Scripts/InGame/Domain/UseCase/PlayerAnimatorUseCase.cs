@@ -11,6 +11,8 @@ namespace Soroeru.InGame.Domain.UseCase
         private static readonly int _attack = Animator.StringToHash("Attack1");
         private static readonly int _damage = Animator.StringToHash("Damage");
         private static readonly int _isDead = Animator.StringToHash("IsDead");
+        private static readonly int _clear = Animator.StringToHash("Clear");
+        private static readonly int _finish = Animator.StringToHash("Finish");
 
         public PlayerAnimatorUseCase(Animator animator)
         {
@@ -48,6 +50,16 @@ namespace Soroeru.InGame.Domain.UseCase
         {
             _animator.SetTrigger(_damage);
             _animator.SetBool(_isDead, true);
+        }
+
+        public void SetClear()
+        {
+            _animator.SetTrigger(_clear);
+        }
+
+        public void SetFinish()
+        {
+            _animator.SetTrigger(_finish);
         }
     }
 }

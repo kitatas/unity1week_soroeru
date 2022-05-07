@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Soroeru.Common.Data.DataStore;
+using Soroeru.Common.Data.Entity;
 using Soroeru.Common.Domain.Repository;
 using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
@@ -20,6 +21,9 @@ namespace Soroeru.Common
             // DataStore
             builder.RegisterInstance<BgmTable>(bgmTable);
             builder.RegisterInstance<SeTable>(seTable);
+
+            // Entity
+            builder.Register<SceneEntity>(Lifetime.Singleton);
 
             // Repository
             builder.Register<SoundRepository>(Lifetime.Singleton);
