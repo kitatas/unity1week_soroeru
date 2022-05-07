@@ -27,7 +27,7 @@ namespace Soroeru.InGame.Domain.UseCase
         public IReadOnlyReactiveProperty<float> equipLifeTime => _equipLifeTime;
         public IReadOnlyReactiveProperty<EquipType> equipType => _equipType;
 
-        public void Equip(EquipType type)
+        public bool Equip(EquipType type)
         {
             var data = _equipRepository.FindEquipData(type);
             if (data == null)
@@ -43,17 +43,18 @@ namespace Soroeru.InGame.Domain.UseCase
             _equipSprite.Value = data.sprite;
             _equipLifeTime.Value = data.time;
             _equipType.Value = data.type;
+            return true;
         }
 
-        public void Equip(PictureType type)
+        public bool Equip(PictureType type)
         {
             var equipType = type.ConvertForEquip();
             if (equipType == EquipType.None)
             {
-                return;
+                return false;
             }
 
-            Equip(equipType);
+            return Equip(equipType);
         }
 
         public void Tick(float deltaTime)

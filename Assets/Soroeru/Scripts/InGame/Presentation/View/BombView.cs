@@ -1,4 +1,5 @@
 using System.Collections;
+using Soroeru.Common;
 using UnityEngine;
 
 namespace Soroeru.InGame.Presentation.View
@@ -24,6 +25,7 @@ namespace Soroeru.InGame.Presentation.View
             animator.SetBool(_ignite, true);
             yield return new WaitForSeconds(igniteTime);
 
+            seController.Play(SeType.Explode);
             var bomb = Instantiate(bombDamageView, transform.position, Quaternion.identity);
             bomb.SetUp(explodeTime);
             Destroy(gameObject);

@@ -1,3 +1,4 @@
+using Soroeru.Common;
 using Soroeru.InGame.Data.Entity;
 using UniRx;
 using UniRx.Triggers;
@@ -21,6 +22,7 @@ namespace Soroeru.InGame.Presentation.View
                 {
                     if (other.TryGetComponent(out EnemyView enemyView))
                     {
+                        seController.Play(SeType.HitEnemy);
                         enemyView.ApplyDamage(attackEntity.attackPower);
                     }
 

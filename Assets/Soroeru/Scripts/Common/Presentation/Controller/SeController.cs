@@ -18,5 +18,34 @@ namespace Soroeru.Common.Presentation.Controller
             var clip = _seUseCase.GetSe(type);
             audioSource.PlayOneShot(clip);
         }
+
+        public void PlayLoop(SeType type, bool isForce = false)
+        {
+            if (isForce == false && audioSource.isPlaying)
+            {
+                var clip = _seUseCase.GetSe(type);
+                if (clip == audioSource.clip)
+                {
+                    return;
+                }
+
+                if (type == SeType.ReelRoll)
+                {
+                    return;
+                }
+            }
+
+            audioSource.clip = _seUseCase.GetSe(type);
+            audioSource.Play();
+        }
+
+        public void Stop(SeType type)
+        {
+            var clip = _seUseCase.GetSe(type);
+            if (clip == audioSource.clip)
+            {
+                audioSource.Stop();
+            }
+        }
     }
 }

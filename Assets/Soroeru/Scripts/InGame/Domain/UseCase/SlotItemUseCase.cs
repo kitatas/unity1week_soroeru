@@ -16,7 +16,7 @@ namespace Soroeru.InGame.Domain.UseCase
             _transform = transform;
         }
 
-        public void Generate(ItemType type, Direction direction)
+        public bool Generate(ItemType type, Direction direction)
         {
             var data = _slotItemRepository.FindSlotItemData(type);
             if (data == null)
@@ -33,17 +33,18 @@ namespace Soroeru.InGame.Domain.UseCase
                                + direction.ConvertVector3() * 0.5f + Vector3.down * 0.1f;
             var item = Object.Instantiate(data.item, initPosition, Quaternion.identity);
             item.Generate(data.time);
+            return true;
         }
 
-        public void Generate(PictureType type, Direction direction)
+        public bool Generate(PictureType type, Direction direction)
         {
             var itemType = type.ConvertForItem();
             if (itemType == ItemType.None)
             {
-                return;
+                return false;
             }
 
-            Generate(itemType, direction);
+            return Generate(itemType, direction);
         }
     }
 }
