@@ -96,5 +96,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackPower: 20
   hitPoint: 20
+  explode: {fileID: 4130060785258419074, guid: 961b4a9cf01da48bc9a62abb754b7017, type: 3}
   enemyAmmoView: {fileID: 1057985311787120343, guid: 647b91fedc45a43ea87f347a509e0933, type: 3}
   shotInterval: 5

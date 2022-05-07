@@ -7,6 +7,7 @@ namespace Soroeru.InGame.Presentation.View
     public class EnemyView : DamageView
     {
         [SerializeField] private int hitPoint = default;
+        [SerializeField] private EnemyExplodeView explode = default;
 
         protected virtual void Start()
         {
@@ -24,8 +25,8 @@ namespace Soroeru.InGame.Presentation.View
             hitPoint -= damage;
             if (hitPoint <= 0)
             {
-                // TODO: 死亡演出
                 Destroy(gameObject);
+                Instantiate(explode, transform.position, Quaternion.identity);
             }
         }
     }

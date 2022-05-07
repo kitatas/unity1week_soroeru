@@ -100,6 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackPower: 20
   hitPoint: 15
+  explode: {fileID: 4130060785258419074, guid: 961b4a9cf01da48bc9a62abb754b7017, type: 3}
   moveSpeed: 2
   jumpPower: 4
   filter2d:
