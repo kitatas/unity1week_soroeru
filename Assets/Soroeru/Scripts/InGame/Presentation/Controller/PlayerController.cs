@@ -28,13 +28,15 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly SlotView _slotView;
         private readonly BgmController _bgmController;
         private readonly SeController _seController;
+        private readonly SceneLoader _sceneLoader;
 
         public PlayerController(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase,
-            PlayerView playerView, SlotView slotView, BgmController bgmController, SeController seController)
+            PlayerView playerView, SlotView slotView,
+            BgmController bgmController, SeController seController, SceneLoader sceneLoader)
         {
             _buffUseCase = buffUseCase;
             _coinCountUseCase = coinCountUseCase;
@@ -51,6 +53,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _slotView = slotView;
             _bgmController = bgmController;
             _seController = seController;
+            _sceneLoader = sceneLoader;
         }
 
         public void Initialize()
@@ -181,9 +184,11 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetDead();
-                    Debug.Log($"game is over!!");
+                    _playerView.Delay(1.0f, _sceneLoader.LoadFadeCurrent);
                 })
                 .AddTo(_playerView);
+
+            var isGoal = new ReactiveProperty<bool>(false);
 
             void Damage(int damageValue)
             {
@@ -243,22 +248,22 @@ namespace Soroeru.InGame.Presentation.Controller
 
             // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = _playerView.UpdateAsObservable()
-                .Where(_ => true);
+                .Where(_ => isGoal.Value == false);
 
             var fixedTickAsObservable = _playerView.FixedUpdateAsObservable()
-                .Where(_ => true);
+                .Where(_ => isGoal.Value == false);
 
             var triggerEnterAsObservable = _playerView.OnTriggerEnter2DAsObservable()
-                .Where(_ => true);
+                .Where(_ => isGoal.Value == false);
 
             var collisionEnterAsObservable = _playerView.OnCollisionEnter2DAsObservable()
-                .Where(_ => true);
-            
+                .Where(_ => isGoal.Value == false);
+
             var collisionStayAsObservable = _playerView.OnCollisionStay2DAsObservable()
-                .Where(_ => true);
-            
+                .Where(_ => isGoal.Value == false);
+
             var collisionExitAsObservable = _playerView.OnCollisionExit2DAsObservable()
-                .Where(_ => true);
+                .Where(_ => isGoal.Value == false);
 
             tickAsObservable
                 .Subscribe(_ =>
@@ -349,7 +354,26 @@ namespace Soroeru.InGame.Presentation.Controller
 
                     if (other.TryGetComponent(out GoalView goalView))
                     {
+                        isGoal.Value = true;
                         _bgmController.Play(BgmType.Clear);
+                        _animatorUseCase.SetClear();
+
+                        _playerView.Delay(3.0f, () =>
+                        {
+                            _animatorUseCase.SetFinish();
+                            _playerView.Tick(() => _moveUseCase.SetVelocityX(1));
+                        });
+
+                        _playerView.Delay(6.0f, () =>
+                        {
+                            _sceneLoader.LoadFadeNext();
+                        });
+
+                        goalView.DisplayClearText(_sceneLoader.currentScene);
+                        goalView.Play(x =>
+                        {
+                            _coinUseCase.Drop(x, 1);
+                        });
                         return;
                     }
                 })
