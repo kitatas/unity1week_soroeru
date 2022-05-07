@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 2
   slotItem: {fileID: 4386904408343514724, guid: a7df422f576a1496ba09362ecde46784, type: 3}
-  lifeTime: 10
+  lifeTime: 5

@@ -8,8 +8,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -3509284807281892971, guid: 1c5894a7062a64f33a5709237228f0ac, type: 3}
+      propertyPath: hitPoint
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: -3509284807281892971, guid: 1c5894a7062a64f33a5709237228f0ac, type: 3}
       propertyPath: isVertical
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3509284807281892971, guid: 1c5894a7062a64f33a5709237228f0ac, type: 3}
+      propertyPath: attackPower
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: -3509284807281892971, guid: 1c5894a7062a64f33a5709237228f0ac, type: 3}
       propertyPath: isHorizontal
@@ -61,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8643461497611971690, guid: 1c5894a7062a64f33a5709237228f0ac, type: 3}
       propertyPath: m_Name
-      value: Enemy Variant - Move Variant - Vertical
+      value: Enemy Variant - Move_Vertical
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c5894a7062a64f33a5709237228f0ac, type: 3}
