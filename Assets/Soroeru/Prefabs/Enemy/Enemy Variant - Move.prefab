@@ -94,8 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2878f0bdc08046a0a7f29001b64a9b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPower: 3
-  hitPoint: 5
+  attackPower: 20
+  hitPoint: 20
   enemyAmmoView: {fileID: 1057985311787120343, guid: ffbed66b62ad74cb6b51dbedb14e92d4, type: 3}
   shotInterval: 5
   moveSpeed: 2

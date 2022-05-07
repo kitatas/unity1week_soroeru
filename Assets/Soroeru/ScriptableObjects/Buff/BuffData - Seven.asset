@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BuffData - Seven
   m_EditorClassIdentifier: 
   buffType: 2
-  buffValue: 15
+  buffValue: 7

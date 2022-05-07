@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BuffData - Skull
   m_EditorClassIdentifier: 
   buffType: 1
-  buffValue: 3
+  buffValue: 100

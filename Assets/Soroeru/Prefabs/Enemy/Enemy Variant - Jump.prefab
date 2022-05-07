@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02928a07a19246c49da69ff1a3f550c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPower: 3
-  hitPoint: 5
+  attackPower: 20
+  hitPoint: 15
   moveSpeed: 2
   jumpPower: 4
   filter2d:

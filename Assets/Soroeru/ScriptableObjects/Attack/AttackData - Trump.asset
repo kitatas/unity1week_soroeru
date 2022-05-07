@@ -16,4 +16,4 @@ MonoBehaviour:
   attackCollision: {fileID: 2159648691392956607, guid: 021005f600aaa4d03a4eeaf063ad5787, type: 3}
   isFirstGenerate: 1
   lifeTime: -1
-  attackPower: 2
+  attackPower: 5
