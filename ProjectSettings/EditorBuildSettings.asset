@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Soroeru/Scenes/Main2.unity
     guid: 031ee525c7c44e24b9a9c5a11faf3d5a
+  - enabled: 1
+    path: Assets/Soroeru/Scenes/Main3.unity
+    guid: ffd1a4c54fb7bcf45ba66476f7174303
   m_configObjects: {}
