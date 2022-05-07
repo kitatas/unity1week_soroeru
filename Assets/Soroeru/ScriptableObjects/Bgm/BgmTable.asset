@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ae5c6f7985a436e93d6e10d2c877925, type: 3}
   m_Name: BgmTable
   m_EditorClassIdentifier: 
-  dataList: []
+  dataList:
+  - {fileID: 11400000, guid: b57cb88cc104c437196649b5f43f4385, type: 2}
+  - {fileID: 11400000, guid: e804415bac42a41a3a307098c3c38855, type: 2}
+  - {fileID: 11400000, guid: c75ef582762cf40bd914f6bc2afb86f4, type: 2}
