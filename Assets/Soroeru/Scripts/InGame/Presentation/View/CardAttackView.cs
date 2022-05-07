@@ -29,6 +29,13 @@ namespace Soroeru.InGame.Presentation.View
                     if (other.gameObject.TryGetComponent(out EnemyView enemyView))
                     {
                         enemyView.ApplyDamage(attackPower);
+                        return;
+                    }
+
+                    if (other.gameObject.TryGetComponent(out EnemyAmmoView enemyAmmoView))
+                    {
+                        Destroy(enemyAmmoView.gameObject);
+                        return;
                     }
                 })
                 .AddTo(this);
