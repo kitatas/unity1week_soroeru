@@ -44,8 +44,13 @@ namespace Soroeru.Common.Presentation.Controller
             var clip = _seUseCase.GetSe(type);
             if (clip == audioSource.clip)
             {
-                audioSource.Stop();
+                Stop();
             }
+        }
+
+        public void Stop()
+        {
+            audioSource.Stop();
         }
     }
 }
