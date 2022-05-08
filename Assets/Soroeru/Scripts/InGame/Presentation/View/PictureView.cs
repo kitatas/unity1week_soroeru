@@ -41,7 +41,15 @@ namespace Soroeru.InGame.Presentation.View
             var y = Mathf.RoundToInt(localHeight);
             transform
                 .DOLocalMoveY(y, 0.05f)
-                .SetEase(Ease.Linear);
+                .SetEase(Ease.Linear)
+                .OnComplete(() =>
+                {
+                    var current = transform.localPosition;
+                    if (current.y.Equal(-6.0f))
+                    {
+                        transform.localPosition = new Vector3(current.x, 6.0f, current.z);
+                    }
+                });
         }
     }
 }
