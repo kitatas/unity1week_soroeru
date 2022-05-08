@@ -8,18 +8,24 @@ namespace Soroeru.InGame.Presentation.View
         public EnemyType type => enemyType;
         public Vector3 position => transform.position;
 
-        private EnemyView _instance;
+        public EnemyView instance { get; private set; }
 
         public void SetInstance(EnemyView enemyView)
         {
-            _instance = enemyView;
+            instance = enemyView;
         }
 
         public void DestroyInstance()
         {
-            if (_instance)
+            if (instance)
             {
-                Destroy(_instance.gameObject);
+                if (instance.isVisible)
+                {
+                    return;
+                }
+                
+                Destroy(instance.gameObject);
+                instance = null;
             }
         }
     }

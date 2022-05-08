@@ -23,6 +23,10 @@ namespace Soroeru.InGame.Presentation.View
                 {
                     if (other.TryGetComponent(out EnemyPopView popView))
                     {
+                        if (popView.instance)
+                        {
+                            return;
+                        }
                         var enemy = pop?.Invoke((popView.type, popView.position));
                         popView.SetInstance(enemy);
                     }
