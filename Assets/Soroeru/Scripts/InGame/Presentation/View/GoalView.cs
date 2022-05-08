@@ -27,6 +27,8 @@ namespace Soroeru.InGame.Presentation.View
         {
             switch (sceneName)
             {
+                case SceneName.Top:
+                    break;
                 case SceneName.Main1:
                 case SceneName.Main2:
                     clearText.text = "STAGE CLEAR!!";

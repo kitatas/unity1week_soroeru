@@ -9,6 +9,14 @@ namespace Soroeru.InGame.Presentation.View
         [SerializeField] private int hitPoint = default;
         [SerializeField] private EnemyExplodeView explode = default;
 
+        private Renderer _renderer;
+        public bool isVisible => _renderer.isVisible;
+
+        private void Awake()
+        {
+            _renderer = GetComponent<Renderer>();
+        }
+
         protected virtual void Start()
         {
             this.UpdateAsObservable()
