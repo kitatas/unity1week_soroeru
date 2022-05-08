@@ -1,6 +1,7 @@
 using System;
 using EFUK;
 using Soroeru.Common;
+using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
 using Soroeru.InGame.Domain.UseCase;
 using Soroeru.InGame.Presentation.View;
@@ -24,9 +25,10 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly PlayerRayUseCase _rayUseCase;
         private readonly PlayerSpriteUseCase _spriteUseCase;
         private readonly SlotItemUseCase _slotItemUseCase;
+        private readonly TweetUseCase _tweetUseCase;
+        private readonly TimeUseCase _timeUseCase;
         private readonly PlayerView _playerView;
         private readonly SlotView _slotView;
-        private readonly TweetUseCase _tweetUseCase;
         private readonly BgmController _bgmController;
         private readonly SeController _seController;
         private readonly SceneLoader _sceneLoader;
@@ -35,7 +37,7 @@ namespace Soroeru.InGame.Presentation.Controller
             IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
-            SlotItemUseCase slotItemUseCase, TweetUseCase tweetUseCase,
+            SlotItemUseCase slotItemUseCase, TweetUseCase tweetUseCase, TimeUseCase timeUseCase,
             PlayerView playerView, SlotView slotView,
             BgmController bgmController, SeController seController, SceneLoader sceneLoader)
         {
@@ -51,6 +53,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _spriteUseCase = spriteUseCase;
             _slotItemUseCase = slotItemUseCase;
             _tweetUseCase = tweetUseCase;
+            _timeUseCase = timeUseCase;
             _playerView = playerView;
             _slotView = slotView;
             _bgmController = bgmController;
@@ -248,24 +251,34 @@ namespace Soroeru.InGame.Presentation.Controller
             var isStickingLeft = false;
             var isStickingRight = false;
 
+            _playerView.UpdateAsObservable()
+                .Where(_ => _inputUseCase.isMenu)
+                .Where(_ => isGoal.Value == false)
+                .Subscribe(_ =>
+                {
+                    _seController.Play(SeType.Decision);
+                    _timeUseCase.SetPause();
+                })
+                .AddTo(_playerView);
+
             // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = _playerView.UpdateAsObservable()
-                .Where(_ => isGoal.Value == false);
+                .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
             var fixedTickAsObservable = _playerView.FixedUpdateAsObservable()
-                .Where(_ => isGoal.Value == false);
+                .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
             var triggerEnterAsObservable = _playerView.OnTriggerEnter2DAsObservable()
-                .Where(_ => isGoal.Value == false);
+                .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
             var collisionEnterAsObservable = _playerView.OnCollisionEnter2DAsObservable()
-                .Where(_ => isGoal.Value == false);
+                .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
             var collisionStayAsObservable = _playerView.OnCollisionStay2DAsObservable()
-                .Where(_ => isGoal.Value == false);
+                .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
             var collisionExitAsObservable = _playerView.OnCollisionExit2DAsObservable()
-                .Where(_ => isGoal.Value == false);
+                .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
             tickAsObservable
                 .Subscribe(_ =>

@@ -33,4 +33,12 @@ namespace Soroeru.Common
         Main2,
         Main3,
     }
+
+    public enum PauseItemType
+    {
+        None,
+        Continue,
+        Retry,
+        Top,
+    }
 }

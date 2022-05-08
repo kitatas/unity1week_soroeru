@@ -29,22 +29,28 @@ namespace Soroeru.Common
             builder.Register<SoundRepository>(Lifetime.Singleton);
 
             // UseCase
+            builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<SoundUseCase>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<TimeUseCase>(Lifetime.Singleton);
 
             // Controller
+            builder.RegisterEntryPoint<PauseController>();
             builder.Register<SceneLoader>(Lifetime.Singleton);
 
             // MonoBehaviour
             var bgm = FindObjectOfType<BgmController>();
             var se = FindObjectOfType<SeController>();
+            var pause = FindObjectOfType<PauseView>();
             builder.RegisterInstance<BgmController>(bgm);
             builder.RegisterInstance<SeController>(se);
+            builder.RegisterInstance<PauseView>(pause);
             builder.RegisterInstance<TransitionMaskView>(FindObjectOfType<TransitionMaskView>());
 
             autoInjectGameObjects = new List<GameObject>
             {
                 bgm.gameObject,
                 se.gameObject,
+                pause.gameObject,
             };
         }
     }
