@@ -133,13 +133,21 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(_playerView);
 
+            var isGoal = new ReactiveProperty<bool>(false);
+
             // 全てのリールが停止した時
             var reelStop = new Subject<Unit>();
             reelStop
                 .Where(_ => _slotView.IsReelStopAll())
                 .Subscribe(_ =>
                 {
-                    _playerView.Delay(SlotConfig.REEL_ROTATE_INTERVAL, () => _seController.PlayLoop(SeType.ReelRoll));
+                    _playerView.Delay(SlotConfig.REEL_ROTATE_INTERVAL, () =>
+                    {
+                        if (isGoal.Value == false)
+                        {
+                            _seController.PlayLoop(SeType.ReelRoll);
+                        }
+                    });
                     _seController.Stop(SeType.ReelRoll);
                     _seController.Play(SeType.ReelStop);
 
@@ -192,8 +200,6 @@ namespace Soroeru.InGame.Presentation.Controller
                     _playerView.Delay(1.0f, _sceneLoader.LoadFadeCurrent);
                 })
                 .AddTo(_playerView);
-
-            var isGoal = new ReactiveProperty<bool>(false);
 
             void Damage(int damageValue)
             {
@@ -261,7 +267,6 @@ namespace Soroeru.InGame.Presentation.Controller
                 })
                 .AddTo(_playerView);
 
-            // TODO: メニュー開いている場合は動かさない
             var tickAsObservable = _playerView.UpdateAsObservable()
                 .Where(_ => isGoal.Value == false && _timeUseCase.isPause == false);
 
@@ -373,7 +378,8 @@ namespace Soroeru.InGame.Presentation.Controller
                         _seController.Stop();
                         _bgmController.Play(BgmType.Clear);
                         _animatorUseCase.SetClear();
-                        _tweetUseCase.Tweet(_coinCountUseCase.count);
+                        _slotView.gameObject.SetActive(false);
+                        // _tweetUseCase.Tweet(_coinCountUseCase.count);
 
                         _playerView.Delay(3.0f, () =>
                         {
