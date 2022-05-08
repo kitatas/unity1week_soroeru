@@ -27,7 +27,7 @@ namespace Soroeru.InGame
 
     public sealed class ItemConfig
     {
-        public const float DROP_COIN_LIFE_TIME = 3.0f;
+        public const float DROP_COIN_LIFE_TIME = 2.0f;
     }
 
     public sealed class SlotItemConfig
