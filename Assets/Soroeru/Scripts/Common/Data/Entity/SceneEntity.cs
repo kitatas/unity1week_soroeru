@@ -4,8 +4,7 @@ namespace Soroeru.Common.Data.Entity
     {
         public SceneEntity()
         {
-            // TODO: fix
-            Set(SceneName.Main1);
+            Set(SceneName.Top);
         }
     }
 }
