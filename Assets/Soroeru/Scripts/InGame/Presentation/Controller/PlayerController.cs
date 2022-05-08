@@ -387,7 +387,7 @@ namespace Soroeru.InGame.Presentation.Controller
                             _playerView.Tick(() => _moveUseCase.SetVelocityX(1));
                         });
 
-                        _playerView.Delay(6.0f, () =>
+                        _playerView.Delay(4.0f, () =>
                         {
                             _sceneLoader.LoadFadeNext();
                         });

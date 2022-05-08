@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equipType: 2
   equipSprite: {fileID: 21300000, guid: 6eb1c6a42b8644b4aa12ea7b847bbfe7, type: 3}
-  lifeTime: 15
+  lifeTime: 8
