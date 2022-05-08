@@ -370,6 +370,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     if (other.TryGetComponent(out GoalView goalView))
                     {
                         isGoal.Value = true;
+                        _seController.Stop();
                         _bgmController.Play(BgmType.Clear);
                         _animatorUseCase.SetClear();
                         _tweetUseCase.Tweet(_coinCountUseCase.count);
