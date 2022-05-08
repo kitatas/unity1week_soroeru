@@ -7,7 +7,6 @@ namespace Soroeru.InGame.Domain.UseCase
         bool isJump { get; }
         bool isJumping { get; }
         bool isAttack { get; }
-        bool isDecision { get; }
         bool isMenu { get; }
     }
 }
