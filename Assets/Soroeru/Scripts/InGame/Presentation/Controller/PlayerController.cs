@@ -17,7 +17,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly BuffUseCase _buffUseCase;
         private readonly CoinCountUseCase _coinCountUseCase;
         private readonly CoinUseCase _coinUseCase;
-        private readonly IPlayerInputUseCase _inputUseCase;
+        private readonly IInputUseCase _inputUseCase;
         private readonly PlayerAnimatorUseCase _animatorUseCase;
         private readonly PlayerAttackUseCase _attackUseCase;
         private readonly PlayerEquipUseCase _equipUseCase;
@@ -34,7 +34,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly SceneLoader _sceneLoader;
 
         public PlayerController(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
-            IPlayerInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
+            IInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
             PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase, TweetUseCase tweetUseCase, TimeUseCase timeUseCase,

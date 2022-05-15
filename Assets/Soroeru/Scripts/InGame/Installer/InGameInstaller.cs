@@ -67,7 +67,6 @@ namespace Soroeru.InGame.Installer
             builder.Register<CoinCountUseCase>(Lifetime.Scoped);
             builder.Register<CoinUseCase>(Lifetime.Scoped);
             builder.Register<EnemyUseCase>(Lifetime.Scoped);
-            builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<PlayerAnimatorUseCase>(Lifetime.Scoped).WithParameter(animator);
             builder.Register<PlayerAttackUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
             builder.Register<PlayerEquipUseCase>(Lifetime.Scoped);

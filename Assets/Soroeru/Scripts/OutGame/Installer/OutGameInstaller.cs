@@ -18,7 +18,6 @@ namespace Soroeru.OutGame.Installer
         protected override void Configure(IContainerBuilder builder)
         {
             // UseCase
-            builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<ScreenUseCase>(Lifetime.Scoped);
 
             // Controller
