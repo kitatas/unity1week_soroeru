@@ -1,29 +1,26 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using EFUK;
 using Soroeru.Common;
 using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
+using Soroeru.OutGame.Presentation.View;
 using UnityEngine;
-using UnityEngine.UI;
-using VContainer;
 
 namespace Soroeru.OutGame.Presentation.Controller
 {
     public sealed class CreditController : BaseScreen
     {
-        [SerializeField] private ScrollRect scrollRect = default;
-
         public override ScreenType type => ScreenType.Credit;
 
-        private IInputUseCase _inputUseCase;
-        private SeController _seController;
+        private readonly IInputUseCase _inputUseCase;
+        private readonly SeController _seController;
+        private readonly CreditView _creditView;
 
-        [Inject]
-        private void Construct(IInputUseCase inputUseCase, SeController seController)
+        public CreditController(IInputUseCase inputUseCase, SeController seController, CreditView creditView)
         {
             _inputUseCase = inputUseCase;
             _seController = seController;
+            _creditView = creditView;
         }
 
         public override async UniTask InitAsync(CancellationToken token)
@@ -38,13 +35,14 @@ namespace Soroeru.OutGame.Presentation.Controller
                 if (_inputUseCase.isBack)
                 {
                     _seController.Play(SeType.Decision);
-                    this.Delay(UiConfig.POP_UP_ANIMATION_TIME, () => scrollRect.verticalNormalizedPosition = 1.0f);
+                    _creditView.ResetPosition();
                     return ScreenType.Menu;
                 }
 
                 if (_inputUseCase.vertical != 0.0f)
                 {
-                    scrollRect.verticalNormalizedPosition += _inputUseCase.vertical * Time.deltaTime * 0.1f;
+                    var deltaTime = Time.deltaTime;
+                    _creditView.Tick(_inputUseCase.vertical * deltaTime);
                 }
 
                 await UniTask.Yield(token);

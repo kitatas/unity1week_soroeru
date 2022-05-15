@@ -1,40 +1,33 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using Soroeru.Common;
 using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
-using UnityEngine;
-using UnityEngine.UI;
-using VContainer;
+using Soroeru.OutGame.Presentation.View;
 
 namespace Soroeru.OutGame.Presentation.Controller
 {
     public sealed class TopController : BaseScreen
     {
-        [SerializeField] private Graphic press = default;
-
         public override ScreenType type => ScreenType.Top;
 
-        private IInputUseCase _inputUseCase;
-        private SeController _seController;
+        private readonly IInputUseCase _inputUseCase;
+        private readonly SeController _seController;
+        private readonly TopView _topView;
 
-        [Inject]
-        private void Construct(IInputUseCase inputUseCase, BgmController bgmController, SeController seController)
+        public TopController(IInputUseCase inputUseCase, BgmController bgmController, SeController seController,
+            TopView topView)
         {
             _inputUseCase = inputUseCase;
             _seController = seController;
+            _topView = topView;
 
             bgmController.Play(BgmType.Top);
         }
 
         public override async UniTask InitAsync(CancellationToken token)
         {
-            press
-                .DOFade(0.0f, 0.2f)
-                .SetEase(Ease.Linear)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetLink(press.gameObject);
+            _topView.FlashPress();
 
             await UniTask.Yield(token);
         }

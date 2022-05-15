@@ -1,10 +1,9 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace Soroeru.OutGame.Presentation.Controller
 {
-    public abstract class BaseScreen : MonoBehaviour
+    public abstract class BaseScreen
     {
         public abstract ScreenType type { get; }
 
