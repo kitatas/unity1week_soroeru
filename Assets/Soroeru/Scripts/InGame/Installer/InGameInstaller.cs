@@ -69,6 +69,7 @@ namespace Soroeru.InGame.Installer
             builder.Register<EnemyUseCase>(Lifetime.Scoped);
             builder.Register<PlayerAnimatorUseCase>(Lifetime.Scoped).WithParameter(animator);
             builder.Register<PlayerAttackUseCase>(Lifetime.Scoped).WithParameter(playerTransform);
+            builder.Register<PlayerDirectionUseCase>(Lifetime.Scoped);
             builder.Register<PlayerEquipUseCase>(Lifetime.Scoped);
             builder.Register<PlayerMoveUseCase>(Lifetime.Scoped).WithParameter(rigidbody2d);
             builder.Register<PlayerRayUseCase>(Lifetime.Scoped).WithParameter(playerTransform);

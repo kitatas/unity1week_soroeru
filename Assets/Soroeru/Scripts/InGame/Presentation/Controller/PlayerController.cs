@@ -20,6 +20,7 @@ namespace Soroeru.InGame.Presentation.Controller
         private readonly IInputUseCase _inputUseCase;
         private readonly PlayerAnimatorUseCase _animatorUseCase;
         private readonly PlayerAttackUseCase _attackUseCase;
+        private readonly PlayerDirectionUseCase _directionUseCase;
         private readonly PlayerEquipUseCase _equipUseCase;
         private readonly PlayerMoveUseCase _moveUseCase;
         private readonly PlayerRayUseCase _rayUseCase;
@@ -35,7 +36,7 @@ namespace Soroeru.InGame.Presentation.Controller
 
         public PlayerController(BuffUseCase buffUseCase, CoinCountUseCase coinCountUseCase, CoinUseCase coinUseCase,
             IInputUseCase inputUseCase, PlayerAnimatorUseCase animatorUseCase,
-            PlayerAttackUseCase attackUseCase, PlayerEquipUseCase equipUseCase,
+            PlayerAttackUseCase attackUseCase, PlayerDirectionUseCase directionUseCase, PlayerEquipUseCase equipUseCase,
             PlayerMoveUseCase moveUseCase, PlayerRayUseCase rayUseCase, PlayerSpriteUseCase spriteUseCase,
             SlotItemUseCase slotItemUseCase, TweetUseCase tweetUseCase, TimeUseCase timeUseCase,
             PlayerView playerView, SlotView slotView,
@@ -47,6 +48,7 @@ namespace Soroeru.InGame.Presentation.Controller
             _inputUseCase = inputUseCase;
             _animatorUseCase = animatorUseCase;
             _attackUseCase = attackUseCase;
+            _directionUseCase = directionUseCase;
             _equipUseCase = equipUseCase;
             _moveUseCase = moveUseCase;
             _rayUseCase = rayUseCase;
@@ -73,17 +75,9 @@ namespace Soroeru.InGame.Presentation.Controller
             horizontal
                 .Subscribe(x =>
                 {
+                    _directionUseCase.Set(x);
                     _animatorUseCase.SetRun(x);
                     _spriteUseCase.Flip(x);
-                })
-                .AddTo(_playerView);
-
-            horizontal
-                .Where(x => x.EqualZero() == false)
-                .Subscribe(x =>
-                {
-                    var direction = x > 0 ? Direction.Right : Direction.Left;
-                    _playerView.SetDirection(direction);
                 })
                 .AddTo(_playerView);
 
@@ -107,7 +101,7 @@ namespace Soroeru.InGame.Presentation.Controller
                         _seController.Play(SeType.Gun);
                     }
                     _animatorUseCase.SetAttack();
-                    _attackUseCase.Attack(_equipUseCase.currentEquip, _playerView.direction);
+                    _attackUseCase.Attack(_equipUseCase.currentEquip, _directionUseCase.current);
                 })
                 .AddTo(_playerView);
 
@@ -119,7 +113,7 @@ namespace Soroeru.InGame.Presentation.Controller
                 .Subscribe(_ =>
                 {
                     _animatorUseCase.SetDamage();
-                    _moveUseCase.KnockBack(_playerView.direction);
+                    _moveUseCase.KnockBack(_directionUseCase.current);
                     _playerView.StartCoroutine(_spriteUseCase.Flash(PlayerConfig.INVINCIBLE_TIME));
                     _playerView.SetLayer(LayerConfig.DAMAGED);
 
@@ -154,7 +148,7 @@ namespace Soroeru.InGame.Presentation.Controller
                     var type = _slotView.GetRole();
 
                     var isEquip = _equipUseCase.Equip(type);
-                    var isGenerate = _slotItemUseCase.Generate(type, _playerView.direction);
+                    var isGenerate = _slotItemUseCase.Generate(type, _directionUseCase.current);
                     var buffType = _buffUseCase.SetUp(type);
                     if (isEquip || isGenerate)
                     {
@@ -319,11 +313,11 @@ namespace Soroeru.InGame.Presentation.Controller
                         }
                         else if (Input.GetKeyDown(KeyCode.J))
                         {
-                            _slotItemUseCase.Generate(ItemType.Jump, _playerView.direction);
+                            _slotItemUseCase.Generate(ItemType.Jump, _directionUseCase.current);
                         }
                         else if (Input.GetKeyDown(KeyCode.B))
                         {
-                            _slotItemUseCase.Generate(ItemType.Bomb, _playerView.direction);
+                            _slotItemUseCase.Generate(ItemType.Bomb, _directionUseCase.current);
                         }
                         else if (Input.GetKeyDown(KeyCode.K))
                         {
