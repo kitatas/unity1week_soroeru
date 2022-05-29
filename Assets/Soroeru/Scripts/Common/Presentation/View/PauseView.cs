@@ -1,5 +1,4 @@
 using EFUK;
-using UniRx;
 using UnityEngine;
 
 namespace Soroeru.Common.Presentation.View
@@ -9,33 +8,18 @@ namespace Soroeru.Common.Presentation.View
         [SerializeField] private CanvasGroup canvasGroup = default;
         [SerializeField] private RectTransform cursor = default;
         [SerializeField] private PauseItemView[] items = default;
-        private ReactiveProperty<int> _index;
 
-        private int index => _index.Value;
-        public PauseItemType type => items[index].type;
-
-        public void Init()
+        public void SetCursorPosition(int index)
         {
-            _index = new ReactiveProperty<int>(0);
-            _index
-                .Subscribe(x =>
-                {
-                    cursor.transform.localPosition = items[x].localPosition;
-                })
-                .AddTo(this);
-
-            Hide();
+            cursor.transform.localPosition = items[index].localPosition;
         }
 
-        public void CursorUp()
+        public PauseItemType GetCurrentType(int index)
         {
-            _index.Value = MathfExtension.RepeatDecrement(index, 0, items.GetLastIndex());
+            return items[index].type;
         }
 
-        public void CursorDown()
-        {
-            _index.Value = MathfExtension.RepeatIncrement(index, 0, items.GetLastIndex());
-        }
+        public int itemLastIndex => items.GetLastIndex();
 
         public void Show()
         {
@@ -45,7 +29,6 @@ namespace Soroeru.Common.Presentation.View
         public void Hide()
         {
             canvasGroup.alpha = 0;
-            _index.Value = 0;
         }
     }
 }
