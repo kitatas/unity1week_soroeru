@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using Soroeru.Common;
 using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
-using Soroeru.OutGame.Domain.UseCase;
 using Soroeru.OutGame.Presentation.View;
 using UniRx;
 

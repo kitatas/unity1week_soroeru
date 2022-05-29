@@ -1,7 +1,7 @@
 using EFUK;
 using UniRx;
 
-namespace Soroeru.OutGame.Domain.UseCase
+namespace Soroeru.Common.Domain.UseCase
 {
     public sealed class ItemIndexUseCase
     {

@@ -29,6 +29,7 @@ namespace Soroeru.Common
             builder.Register<SoundRepository>(Lifetime.Singleton);
 
             // UseCase
+            builder.Register<ItemIndexUseCase>(Lifetime.Transient);
             builder.Register<KeyboardInputUseCase>(Lifetime.Scoped).AsImplementedInterfaces();
             builder.Register<SoundUseCase>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<TimeUseCase>(Lifetime.Singleton);

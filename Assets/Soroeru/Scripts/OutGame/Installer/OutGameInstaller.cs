@@ -19,7 +19,6 @@ namespace Soroeru.OutGame.Installer
         protected override void Configure(IContainerBuilder builder)
         {
             // UseCase
-            builder.Register<ItemIndexUseCase>(Lifetime.Transient);
             builder.Register<ScreenUseCase>(Lifetime.Scoped);
 
             // Controller
