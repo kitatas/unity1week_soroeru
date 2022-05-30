@@ -17,9 +17,8 @@ namespace Soroeru.InGame.Domain.UseCase
             _enemyRepository = enemyRepository;
         }
 
-        public EnemyView SetUp((EnemyType type, Vector3 position) value)
+        public EnemyView SetUp(EnemyType type, Vector3 position)
         {
-            var (type, position) = value;
             var data = _enemyRepository.FindEnemyData(type);
             if (data == null)
             {

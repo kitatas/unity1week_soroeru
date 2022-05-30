@@ -21,7 +21,26 @@ namespace Soroeru.InGame.Presentation.Controller
 
         public void Initialize()
         {
-            _cameraView.Init(_enemyUseCase.SetUp);
+            _cameraView.Init(popRange =>
+            {
+                popRange
+                    .OnTriggerEnter<EnemyPopView>(x =>
+                    {
+                        if (x.instance)
+                        {
+                            return;
+                        }
+
+                        var enemy = _enemyUseCase.SetUp(x.type, x.position);
+                        x.SetInstance(enemy);
+                    });
+
+                popRange
+                    .OnTriggerExit<EnemyPopView>(x =>
+                    {
+                        x.DestroyInstance();
+                    });
+            });
 
             _playerDirectionUseCase.direction
                 .Subscribe(_cameraView.Tick)
