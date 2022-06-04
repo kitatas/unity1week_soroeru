@@ -34,16 +34,10 @@ namespace Soroeru.OutGame.Presentation.Controller
 
         public override async UniTask<ScreenType> TickAsync(CancellationToken token)
         {
-            while (true)
-            {
-                if (_inputUseCase.isAnyKey)
-                {
-                    _seController.Play(SeType.Decision);
-                    return ScreenType.Menu;
-                }
+            await UniTask.WaitUntil(() => _inputUseCase.isAnyKey, cancellationToken: token);
 
-                await UniTask.Yield(token);
-            }
+            _seController.Play(SeType.Decision);
+            return ScreenType.Menu;
         }
     }
 }
