@@ -3,45 +3,39 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using EFUK;
 using Soroeru.Common;
+using Soroeru.Common.Domain.UseCase;
 using Soroeru.Common.Presentation.Controller;
-using Soroeru.OutGame.Domain.UseCase;
 using Soroeru.OutGame.Presentation.View;
 using UniRx;
 using UnityEngine;
-using VContainer;
 
 namespace Soroeru.OutGame.Presentation.Controller
 {
     public sealed class OptionController : BaseScreen
     {
-        [SerializeField] private RectTransform cursor = default;
-        [SerializeField] private OptionItemView[] items = default;
-        private ReactiveProperty<int> _index;
-
         public override ScreenType type => ScreenType.Option;
-        private int index => _index.Value;
 
-        private IInputUseCase _inputUseCase;
-        private BgmController _bgmController;
-        private SeController _seController;
+        private readonly IInputUseCase _inputUseCase;
+        private readonly ItemIndexUseCase _indexUseCase;
+        private readonly BgmController _bgmController;
+        private readonly SeController _seController;
+        private readonly OptionView _optionView;
 
-        [Inject]
-        private void Construct(IInputUseCase inputUseCase, BgmController bgmController, SeController seController)
+        public OptionController(IInputUseCase inputUseCase, ItemIndexUseCase indexUseCase, BgmController bgmController,
+            SeController seController, OptionView optionView)
         {
             _inputUseCase = inputUseCase;
+            _indexUseCase = indexUseCase;
             _bgmController = bgmController;
             _seController = seController;
+            _optionView = optionView;
         }
 
         public override async UniTask InitAsync(CancellationToken token)
         {
-            _index = new ReactiveProperty<int>(0);
-            _index
-                .Subscribe(x =>
-                {
-                    cursor.transform.localPosition = items[x].localPosition;
-                })
-                .AddTo(this);
+            _indexUseCase.index
+                .Subscribe(_optionView.SetCursorPosition)
+                .AddTo(_optionView);
 
             await UniTask.Yield(token);
         }
@@ -53,7 +47,7 @@ namespace Soroeru.OutGame.Presentation.Controller
                 if (_inputUseCase.isBack)
                 {
                     _seController.Play(SeType.Decision);
-                    this.Delay(UiConfig.POP_UP_ANIMATION_TIME, () => _index.Value = 0);
+                    _optionView.ResetView(() => _indexUseCase.ResetValue());
                     return ScreenType.Menu;
                 }
 
@@ -61,15 +55,15 @@ namespace Soroeru.OutGame.Presentation.Controller
                 if (vertical > 0)
                 {
                     _seController.Play(SeType.MoveCursor);
-                    _index.Value = MathfExtension.RepeatDecrement(index, 0, items.GetLastIndex());
+                    _indexUseCase.RepeatDecrement(_optionView.itemLastIndex);
                 }
                 else if (vertical < 0)
                 {
                     _seController.Play(SeType.MoveCursor);
-                    _index.Value = MathfExtension.RepeatIncrement(index, 0, items.GetLastIndex());
+                    _indexUseCase.RepeatIncrement(_optionView.itemLastIndex);
                 }
 
-                var volume = GetVolumeController(items[index].type);
+                var volume = GetVolumeController(_optionView.GetCurrentType(_indexUseCase.value));
                 var horizontal = _inputUseCase.horizontalDown;
                 if (horizontal != 0 && volume != null)
                 {
@@ -79,7 +73,7 @@ namespace Soroeru.OutGame.Presentation.Controller
                     {
                         _seController.Play(SeType.MoveCursor);
                         volume.SetVolume(value);
-                        items[index].SetEffectValue(volume.volume);
+                        _optionView.SetVolume(_indexUseCase.value, volume.volume);
                     }
                 }
 

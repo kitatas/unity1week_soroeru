@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using EFUK;
 using Soroeru.InGame.Data.Entity;
 using UniRx;
@@ -20,8 +19,6 @@ namespace Soroeru.InGame.Presentation.View
 
         public Vector3 position => transform.position;
 
-        public Direction direction { get; private set; } = Direction.Right;
-
         public Action<float> jumpAction { get; private set; }
 
         public void Init(Action<float> jump)
@@ -34,16 +31,11 @@ namespace Soroeru.InGame.Presentation.View
             gameObject.SetLayer(layerName);
         }
 
-        public void SetDirection(Direction dir)
-        {
-            direction = dir;
-        }
-
         public Action PowerUp(float lifeTime)
         {
             SetLayer(LayerConfig.DAMAGED);
             var armor = Instantiate(armorView, position, Quaternion.identity);
-            var attackEntity = new AttackEntity(transform, direction, lifeTime, 999);
+            var attackEntity = new AttackEntity(transform, default, lifeTime, 999);
             armor.Fire(attackEntity);
 
             return () =>

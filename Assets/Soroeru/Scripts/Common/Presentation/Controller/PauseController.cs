@@ -10,15 +10,17 @@ namespace Soroeru.Common.Presentation.Controller
     public sealed class PauseController : IInitializable
     {
         private readonly IInputUseCase _inputUseCase;
+        private readonly ItemIndexUseCase _indexUseCase;
         private readonly TimeUseCase _timeUseCase;
         private readonly SeController _seController;
         private readonly SceneLoader _sceneLoader;
         private readonly PauseView _pauseView;
 
-        public PauseController(IInputUseCase inputUseCase, TimeUseCase timeUseCase,
+        public PauseController(IInputUseCase inputUseCase, ItemIndexUseCase indexUseCase, TimeUseCase timeUseCase,
             SeController seController, SceneLoader sceneLoader, PauseView pauseView)
         {
             _inputUseCase = inputUseCase;
+            _indexUseCase = indexUseCase;
             _timeUseCase = timeUseCase;
             _seController = seController;
             _sceneLoader = sceneLoader;
@@ -27,7 +29,10 @@ namespace Soroeru.Common.Presentation.Controller
 
         public void Initialize()
         {
-            _pauseView.Init();
+            _indexUseCase.index
+                .Subscribe(_pauseView.SetCursorPosition)
+                .AddTo(_pauseView);
+
             _pauseView.UpdateAsObservable()
                 .Where(_ => _timeUseCase.isPause)
                 .Subscribe(_ =>
@@ -35,7 +40,7 @@ namespace Soroeru.Common.Presentation.Controller
                     if (_inputUseCase.isDecision)
                     {
                         _seController.Play(SeType.Decision);
-                        switch (_pauseView.type)
+                        switch (_pauseView.GetCurrentType(_indexUseCase.value))
                         {
                             case PauseItemType.Continue:
                                 break;
@@ -58,12 +63,12 @@ namespace Soroeru.Common.Presentation.Controller
                     if (vertical > 0)
                     {
                         _seController.Play(SeType.MoveCursor);
-                        _pauseView.CursorUp();
+                        _indexUseCase.RepeatDecrement(_pauseView.itemLastIndex);
                     }
                     else if (vertical < 0)
                     {
                         _seController.Play(SeType.MoveCursor);
-                        _pauseView.CursorDown();
+                        _indexUseCase.RepeatIncrement(_pauseView.itemLastIndex);
                     }
                 })
                 .AddTo(_pauseView);
@@ -78,6 +83,7 @@ namespace Soroeru.Common.Presentation.Controller
                     else
                     {
                         _pauseView.Hide();
+                        _indexUseCase.ResetValue();
                     }
                 })
                 .AddTo(_pauseView);

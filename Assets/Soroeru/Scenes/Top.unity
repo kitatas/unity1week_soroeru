@@ -3810,7 +3810,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587004333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f268d5471eaf4401ac7a109d4a9ce053, type: 3}
+  m_Script: {fileID: 11500000, guid: e8b6bffffd99498697e6a6b53218ab13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   press: {fileID: 2147135181}
@@ -3823,7 +3823,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587004333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb6fe598c7a04e849e05e3d15324a7ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 874caa98312e4a378d575b4b8860e581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cursor: {fileID: 357165834}
@@ -3854,7 +3854,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587004333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b947c28e3f734ada8a99889b7ba98a0d, type: 3}
+  m_Script: {fileID: 11500000, guid: 50c98615e93c492cb00f3f002b47d13a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cursor: {fileID: 1823483489}
@@ -3870,7 +3870,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587004333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c54bb812cc0c43e1a922e0558ee9c6cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 1baf41e58a494ec4abc981e8f11ec8ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cursor: {fileID: 1904396577}
@@ -3887,7 +3887,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587004333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0028f44f2164d169526c8ba9dd2b0d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 622b7ef5e90d4774809f6738639b95e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 375535725}
@@ -3908,11 +3908,11 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects:
   - {fileID: 587004333}
-  creditController: {fileID: 587004339}
-  menuController: {fileID: 587004338}
-  optionController: {fileID: 587004337}
-  stageSelectController: {fileID: 587004335}
-  topController: {fileID: 587004334}
+  creditView: {fileID: 587004339}
+  menuView: {fileID: 587004338}
+  optionView: {fileID: 587004337}
+  stageSelectView: {fileID: 587004335}
+  topView: {fileID: 587004334}
 --- !u!1 &680280528
 GameObject:
   m_ObjectHideFlags: 0

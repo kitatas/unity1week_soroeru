@@ -1,4 +1,6 @@
 using System;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Soroeru.InGame
@@ -80,6 +82,34 @@ namespace Soroeru.InGame
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+        }
+
+        public static void OnTriggerEnter<T>(this Component component, Action<T> action) where T : Component
+        {
+            component
+                .OnTriggerEnter2DAsObservable()
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out T t))
+                    {
+                        action?.Invoke(t);
+                    }
+                })
+                .AddTo(component);
+        }
+
+        public static void OnTriggerExit<T>(this Component component, Action<T> action) where T : Component
+        {
+            component
+                .OnTriggerExit2DAsObservable()
+                .Subscribe(other =>
+                {
+                    if (other.TryGetComponent(out T t))
+                    {
+                        action?.Invoke(t);
+                    }
+                })
+                .AddTo(component);
         }
     }
 }
